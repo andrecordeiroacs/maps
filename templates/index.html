@@ -1,0 +1,44 @@
+
+<html>
+	<head>
+		<title>Just testing</title>
+	</head>
+	<body>
+		{%if admin != "1"%}
+    	<p>Here's your admin features:</p>
+			<form action ="/createuser">
+			<button type="submit">Create New User</button>
+			</form>
+		{%endif%}
+		<form action="/employee", method = "post">
+			  <p>Please select your Employee:</p>
+				{%for i in range(0,k)%}
+          <div>
+				    <input type="radio" name="employee" value="{{row2[i][0]}}" required />
+				    <label>{{row2[i][1]}}<label>
+	 	      </div>
+				{%endfor%}
+					<button type="submit">Submit</button>
+		</form>
+		<table border="1">
+				<tr>
+					<td>Employee Name</td>
+					<td>CHAC Score</td>
+					<td>Rate Date</td>
+				</tr>
+				{%for i in range(0,m)%}
+				<tr>
+					<td>{{row3[i][10]}}</td>
+					<td>{{row3[i][5]}}</td>
+					<td>{{row3[i][6]}}</td>
+				</tr>
+				{%endfor%}
+		</table>
+
+		<pre id="log">
+		</pre>
+		<form action ="/logout">
+		<button type="submit">Logout</button>
+		</form>
+	</body>
+</html>
