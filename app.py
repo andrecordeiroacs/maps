@@ -8,6 +8,8 @@ from werkzeug import generate_password_hash, check_password_hash
 from flask import flash, session, render_template, request, redirect
 import uuid
 import datetime
+from sendgrid import SendGridAPIClient
+from sendgrid.helpers.mail import Mail
 
 # cache = Cache(config={'CACHE_TYPE': 'simple'})
 app = Flask(__name__)
@@ -17,6 +19,14 @@ app.secret_key = "secret key"
 @app.route('/')
 def login():
 	return render_template('login.html')
+
+@app.route('/forgotPage')
+def forgot():
+        return render_template('forgot.html')
+
+@app.route('/forgot')
+def forgotInput():
+        return redirect('/')
 
 @app.route('/index')
 def index():
@@ -71,6 +81,38 @@ def login_submit():
 	_email = request.form['inputEmail']
 	_password = request.form['inputPassword']
 	# validate the received values
+	if _email and _password and request.method == 'POST':
+		#check user exists
+		conn = mysql.connect()
+		cursor = conn.cursor()
+		sql = "SELECT * FROM cp_users WHERE email=%s"
+		sql_where = (_email,)
+		cursor.execute(sql, sql_where)
+		row = cursor.fetchone()
+		if row:
+			if (row[2] == _password):
+				session['email'] = row[1]
+				cursor.close()
+				conn.close()
+				session["id"]=row[0]
+				session["manager_id"]=row[5]
+				session["company_id"]=row[4]
+	if _email and _password and request.method == 'POST':
+		#check user exists
+		conn = mysql.connect()
+		cursor = conn.cursor()
+		sql = "SELECT * FROM cp_users WHERE email=%s"
+		sql_where = (_email,)
+		cursor.execute(sql, sql_where)
+		row = cursor.fetchone()
+		if row:
+			if (row[2] == _password):
+				session['email'] = row[1]
+				cursor.close()
+				conn.close()
+				session["id"]=row[0]
+				session["manager_id"]=row[5]
+				session["company_id"]=row[4]
 	if _email and _password and request.method == 'POST':
 		#check user exists
 		conn = mysql.connect()
@@ -154,35 +196,3 @@ def newuser():
 	user_id = str(uuid.uuid1())
 	conn2 = mysql.connect()
 	cursor2 = conn2.cursor()
-	sql2 = "INSERT INTO `cp_users`(`user_id`, `email`, `password`, `name`, `company_id`, `manager_id`, `created_at`, `last_login_at`, `hierarchy_enum`, `photo_id`, `status`, `admin`) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,'7','10','1','1')"
-	sql_where2 = (user_id,_useremail,_userpassword,_username,company_id,_usermangerid,created_at,created_at)
-	cursor2.execute(sql2, sql_where2)
-	conn2.commit()
-	conn2 = mysql.connect()
-	cursor2 = conn2.cursor()
-	sql2 = "SELECT user_id,name FROM `cp_users` WHERE company_id = %s"
-	sql_where2 = session.get("company_id",None)
-	cursor2.execute(sql2, sql_where2)
-	row2 = cursor2.fetchall()
-	session['returns'] = row2
-
-	#sql3 = "SELECT * FROM `cp_rating` WHERE manager_id = %s"
-	sql3 = "SELECT * FROM cp_rating LEFT JOIN cp_users ON cp_rating.employee_id = cp_users.user_id WHERE cp_rating.company_id = %s"
-	cursor2.execute(sql3, sql_where2)
-	row3 = cursor2.fetchall()
-	session['rating_returns'] = row3
-	session["m"] = len(row3)
-	session["k"] = len(row2)
-	cursor2.close()
-	conn2.close()
-	return render_template('index.html', row2 = session.get('returns',None), k = session.get("k",None), row3 = session.get("rating_returns", None), m = session.get("m",None))
-
-
-@app.route('/logout')
-def logout():
-	session.pop('email', None)
-	return redirect('/')
-
-if __name__ == "__main__":
-    app.secret_key = 'secret key'
-    app.run()

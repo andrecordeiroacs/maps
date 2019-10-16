@@ -1,4 +1,5 @@
 gunicorn
 flask
 pymysql
+sendgrid
 flask-mysql
