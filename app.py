@@ -10,6 +10,7 @@ import uuid
 import datetime
 from sendgrid import SendGridAPIClient
 from sendgrid.helpers.mail import Mail
+import os
 
 # cache = Cache(config={'CACHE_TYPE': 'simple'})
 app = Flask(__name__)
@@ -24,9 +25,64 @@ def login():
 def forgot():
         return render_template('forgot.html')
 
-@app.route('/forgot')
+@app.route('/forgot', methods = ["POST"])
 def forgotInput():
-        return redirect('/')
+    __email = request.form['inputEmail']
+    conn = mysql.connect()
+    cursor = conn.cursor()
+    sql = "SELECT * FROM `cp_users` WHERE email = %s"
+    sql_where = (__email)
+    cursor.execute(sql, sql_where)
+    row = cursor.fetchall()
+    if (len(row) > 0):
+        session['recover_id'] = row[0][0]
+        print(row[0][0])
+        print(session.get('recover_id',None))
+    else:
+        flash('Invalid Email!')
+    cursor.close()
+    conn.close()
+ 
+    message = Mail(
+                from_email='RateServiceApp@RateService.com.br',
+                to_emails='andrecordeiroacs@gmail.com',
+                subject='Create Here Your New Password',
+                html_content='<body><strong>Hello! Here is the link to redefine your password:<p>localhost:8000/newPass/'+session.get('recover_id',None)+'<p></strong></body>')
+    try:
+        sg = SendGridAPIClient("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")
+        response = sg.send(message)
+        print(response.status_code)
+        print(response.body)
+        print(response.headers)
+    except Exception as e:
+        print(e)
+    return redirect('/')
+
+@app.route('/newPass/<user_id>')
+def newpass(user_id):
+    session['recover_id'] = user_id
+    userid = user_id
+    return render_template('newpass.html', user_id = userid)
+
+@app.route('/createNewPass', methods = ["POST"])
+def createnewpass():
+    __newPass = request.form['inputPassword']
+    conn = mysql.connect()
+    cursor = conn.cursor()
+    user_sql = "SELECT * FROM `cp_users` WHERE user_id = %s"
+    sql_where = session.get("recover_id",None)
+    cursor.execute(user_sql, sql_where)
+    row = cursor.fetchall()
+    if (len(row) > 0):
+        sql2 = "UPDATE `cp_users` SET `password` = %s WHERE user_id = %s"      
+        sql_where2 = (__newPass, session.get("recover_id",None))
+        cursor.execute(sql2, sql_where2)
+        conn.commit()
+    else:
+        flash('Invalid Email!')
+    cursor.close()
+    conn.close()
+    return redirect('/')
 
 @app.route('/index')
 def index():
@@ -161,7 +217,7 @@ def login_submit():
 					session['returns'] = row2
 
 					#sql3 = "SELECT * FROM `cp_rating` WHERE manager_id = %s"
-					sql3 = "SELECT * FROM cp_rating LEFT JOIN cp_users ON cp_rating.employee_id = cp_users.user_id WHERE cp_rating.company_id = %s"
+					sql3 = "SELECT * FROM cp_rating LEFT JOIN cp_users ON cp_rating.employee_id = cp_users.user_id WHERE cp_users.company_id = %s"
 					sql_where2 = session.get("company_id",None)
 					cursor2.execute(sql3, sql_where2)
 					row3 = cursor2.fetchall()
