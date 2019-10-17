@@ -1,0 +1,24 @@
+<doctype html>
+<title>User password recovery</title>
+<h2>Input your e-mail</h2>
+<p>
+	{% with messages = get_flashed_messages() %}
+	  {% if messages %}
+		<ul class=flashes>
+		{% for message in messages %}
+		  <li>{{ message }}</li>
+		{% endfor %}
+		</ul>
+	  {% endif %}
+	{% endwith %}
+</p>
+<form action="/forgot">
+    <dl>
+	<p>
+	<input name="inputEmail" value="" type="text" placeholder="Email" required>
+	</p>
+    </dl>
+    <p>
+	<input type="submit" value="Submit">
+    </p>
+</form>
