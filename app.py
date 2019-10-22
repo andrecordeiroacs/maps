@@ -238,26 +238,27 @@ def login_submit():
 
 @app.route('/createuser')
 def createuser():
-	return render_template('createuser.html')
+    h = len(session.get("returns", None))
+    return render_template('createuser.html', item = h, row = session.get("returns",None))
 
 @app.route('/inputUser', methods=["POST"])
 def newuser():
 	_useremail = request.form['employee_email']
-	_userpassword = request.form['employee_password']
+	_userpassword = 'Not Created'
 	_username = request.form['employee_name']
-	_usermangerid = request.form['manager_employee_id']
-	#manager_id = session.get("id",None)
+	#_usermangerid = request.form['manager_employee_id']
+	_usermangerid = request.form['manager_id'] #session.get("id",None)
 	company_id = session.get("company_id",None)
 	created_at = datetime.date.today()
 	user_id = str(uuid.uuid1())
 	conn2 = mysql.connect()
 	cursor2 = conn2.cursor()
-	sql2 = "INSERT INTO `cp_users`(`user_id`, `email`, `password`, `name`, `company_id`, `manager_id`, `created_at`, `last_login_at`, `hierarchy_enum`, `photo_id`, `status`, `admin`) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,'7','10','1','1')"
+	sql2 = "INSERT INTO `cp_users`(`user_id`, `email`, `password`, `name`, `company_id`, `manager_id`, `created_at`, `last_login_at`, `hierarchy_enum`, `photo_id`, `status`, `admin`) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,'7','10','0','1')"
 	sql_where2 = (user_id,_useremail,_userpassword,_username,company_id,_usermangerid,created_at,created_at)
 	cursor2.execute(sql2, sql_where2)
 	conn2.commit()
-	conn2 = mysql.connect()
-	cursor2 = conn2.cursor()
+	#conn2 = mysql.connect()
+	#cursor2 = conn2.cursor()
 	sql2 = "SELECT user_id,name FROM `cp_users` WHERE company_id = %s"
 	sql_where2 = session.get("company_id",None)
 	cursor2.execute(sql2, sql_where2)
@@ -274,7 +275,6 @@ def newuser():
 	cursor2.close()
 	conn2.close()
 	return render_template('index.html', row2 = session.get('returns',None), k = session.get("k",None), row3 = session.get("rating_returns", None), m = session.get("m",None))
-
 
 @app.route('/logout')
 def logout():
