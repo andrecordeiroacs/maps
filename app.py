@@ -42,12 +42,12 @@ def forgotInput():
         flash('Invalid Email!')
     cursor.close()
     conn.close()
- 
+
     message = Mail(
                 from_email='RateServiceApp@RateService.com.br',
                 to_emails='andrecordeiroacs@gmail.com',
                 subject='Create Here Your New Password',
-                html_content='<body><strong>Hello! Here is the link to redefine your password:<p>localhost:8000/newPass/'+session.get('recover_id',None)+'<p></strong></body>')
+                html_content='<body><strong>Hello! Here is the link to redefine your password:<p><a href="https://polar-island-76558.herokuapp.com/newPass/'+session.get('recover_id',None)+'">Click Here</a><p></strong></body>')
     try:
         sg = SendGridAPIClient("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")
         response = sg.send(message)
@@ -74,7 +74,7 @@ def createnewpass():
     cursor.execute(user_sql, sql_where)
     row = cursor.fetchall()
     if (len(row) > 0):
-        sql2 = "UPDATE `cp_users` SET `password` = %s WHERE user_id = %s"      
+        sql2 = "UPDATE `cp_users` SET `password` = %s WHERE user_id = %s"
         sql_where2 = (__newPass, session.get("recover_id",None))
         cursor.execute(sql2, sql_where2)
         conn.commit()
@@ -274,7 +274,22 @@ def newuser():
 	session["k"] = len(row2)
 	cursor2.close()
 	conn2.close()
+
+	message = Mail(
+                from_email='RateServiceApp@RateService.com.br',
+                to_emails=_useremail,
+                subject='Create Here Your Password',
+                html_content='<body><strong>Hello! Here is the link to create your password:<p><a href="https://polar-island-76558.herokuapp.com/newPass/'+user_id+'">Click Here</a><p></strong></body>')
+
+	sg = SendGridAPIClient("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")
+	response = sg.send(message)
 	return render_template('index.html', row2 = session.get('returns',None), k = session.get("k",None), row3 = session.get("rating_returns", None), m = session.get("m",None))
+
+@app.route('/acessSurvey/<user_id>')
+def acessSurvey(user_id):
+    session['survey_user_id'] = user_id
+    survey_user_id = user_id
+    return render_template('chart.html', survey_user_id = survey_user_id, row2 = session.get('returns',None), k = session.get("k",None), row3 = session.get("rating_returns", None), m = session.get("m",None))
 
 @app.route('/logout')
 def logout():

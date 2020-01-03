@@ -1,4 +1,202 @@
+<!doctype html>
+<html lang="en">
+
 <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta http-equiv="Content-Language" content="en">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <title>ChartJS - Huge selection of charts created with the React ChartJS Plugin</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, shrink-to-fit=yes" />
+    <meta name="description" content="Huge selection of charts created with the React ChartJS Plugin">
+    <meta name="msapplication-tap-highlight" content="no">
+    <!--
+    =========================================================
+    * ArchitectUI HTML Theme Dashboard - v1.0.0
+    =========================================================
+    * Product Page: https://dashboardpack.com
+    * Copyright 2019 DashboardPack (https://dashboardpack.com)
+    * Licensed under MIT (https://github.com/DashboardPack/architectui-html-theme-free/blob/master/LICENSE)
+    =========================================================
+    * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+    -->
+<link href="{{ url_for('static',filename='styles/./main.css')}}" rel="stylesheet"></head>
+<body>
+    <div class="app-container app-theme-white body-tabs-shadow fixed-sidebar fixed-header">
+        <div class="app-header header-shadow">
+            <div class="app-header__content">
+                    <ul class="header-menu nav">
+                        <li class="btn-group nav-item my-lg-0">
+														<!-- <a href="/index.html" class="nav-link">
+																<i class="nav-link-icon fa fa-edit"></i>
+																Home
+														</a> -->
+                            <a href="/logout" class="nav-link">
+                                <i class="nav-link-icon fa fa-edit"></i>
+                                Logout
+                            </a>
+                        </li>
+                    </ul>
+            </div>
+        </div>
+                <div class="app-main__outer">
+                    <div class="app-main__inner">
+                        <div class="app-page-title">
+                            <div class="page-title-wrapper">
+                                <div class="page-title-heading">
+                                    <div class="page-title-icon">
+                                        <i class="pe-7s-bandaid icon-gradient bg-amy-crisp">
+                                        </i>
+                                    </div>
+                                    <div>ChartJS
+                                        <div class="page-title-subheading">Huge selection of charts created with the React ChartJS Plugin
+                                        </div>
+                                    </div>
+                                </div>
+
+                                </div>
+                              </div>
+                        </div>
+
+                        <div class="tab-content">
+                            <div class="tab-pane tabs-animation fade show active" id="tab-content-0" role="tabpanel">
+                                <!-- <div class="row">
+                                    <div class="col-md-6"> -->
+                                        <div class="main-card mb-3 card">
+                                            <div class="card-body">
+                                              <h5 class="card-title">Select your Employee Values</h5>
+                                              <div>
+																									<form action="/inputRating" method="post">
+																										<p>Caráter:</p>
+																										<div>
+																											<input type="radio" id="characterChoice1" name="character" value="1" required>
+																											<label for="characterChoice1">1</label>
+																											<input type="radio" id="characterChoice2" name="character" value="2">
+																											<label for="characterChoice2">2</label>
+																											<input type="radio" id="characterChoice3" name="character" value="3">
+																											<label for="characterChoice3">3</label>
+																											<input type="radio" id="characterChoice4" name="character" value="4">
+																											<label for="characterChoice4">4</label>
+																											<input type="radio" id="characterChoice5" name="character" value="5">
+																											<label for="characterChoice5">5</label>
+																											<input type="radio" id="characterChoice6" name="character" value="6">
+																											<label for="characterChoice6">6</label>
+																											<input type="radio" id="characterChoice7" name="character" value="7">
+																											<label for="characterChoice7">7</label>
+																											<input type="radio" id="characterChoice8" name="character" value="8">
+																											<label for="characterChoice8">8</label>
+																											<input type="radio" id="characterChoice9" name="character" value="9">
+																											<label for="characterChoice9">9</label>
+																											<input type="radio" id="characterChoice10" name="character" value="10">
+																											<label for="characterChoice10">10</label>
+																										</div>
+																										<p>Habilidade:</p>
+																										<div>
+																											<input type="radio" id="habilityChoice1" name="hability" value="1" required>
+																											<label for="habilityChoice1">1</label>
+																											<input type="radio" id="habilityChoice2" name="hability" value="2">
+																											<label for="habilityChoice2">2</label>
+																											<input type="radio" id="habilityChoice3" name="hability" value="3">
+																											<label for="habilityChoice3">3</label>
+																											<input type="radio" id="habilityChoice4" name="hability" value="4">
+																											<label for="habilityChoice4">4</label>
+																											<input type="radio" id="habilityChoice5" name="hability" value="5">
+																											<label for="habilityChoice5">5</label>
+																											<input type="radio" id="habilityChoice6" name="hability" value="6">
+																											<label for="habilityChoice6">6</label>
+																											<input type="radio" id="habilityChoice7" name="hability" value="7">
+																											<label for="habilityChoice7">7</label>
+																											<input type="radio" id="habilityChoice8" name="hability" value="8">
+																											<label for="habilityChoice8">8</label>
+																											<input type="radio" id="habilityChoice9" name="hability" value="9">
+																											<label for="habilityChoice9">9</label>
+																											<input type="radio" id="habilityChoice10" name="hability" value="10">
+																											<label for="habilityChoice10">10</label>
+																										</div>
+																										<p>Atitude::</p>
+																										<div>
+																											<input type="radio" id="attitudeChoice1" name="attitude" value="1" required>
+																											<label for="attitudeChoice1">1</label>
+																											<input type="radio" id="attitudeChoice2" name="attitude" value="2">
+																											<label for="attitudeChoice2">2</label>
+																											<input type="radio" id="attitudeChoice3" name="attitude" value="3">
+																											<label for="attitudeChoice3">3</label>
+																											<input type="radio" id="attitudeChoice4" name="attitude" value="4">
+																											<label for="attitudeChoice4">4</label>
+																											<input type="radio" id="attitudeChoice5" name="attitude" value="5">
+																											<label for="attitudeChoice5">5</label>
+																											<input type="radio" id="attitudeChoice6" name="attitude" value="6">
+																											<label for="attitudeChoice6">6</label>
+																											<input type="radio" id="attitudeChoice7" name="attitude" value="7">
+																											<label for="attitudeChoice7">7</label>
+																											<input type="radio" id="attitudeChoice8" name="attitude" value="8">
+																											<label for="attitudeChoice8">8</label>
+																											<input type="radio" id="attitudeChoice9" name="attitude" value="9">
+																											<label for="attitudeChoice9">9</label>
+																											<input type="radio" id="attitudeChoice10" name="attitude" value="10">
+																											<label for="attitudeChoice10">10</label>
+																										</div>
+																										<p>Conhecimento:</p>
+																										<div>
+																											<input type="radio" id="knowledgeChoice1" name="knowledge" value="1" required>
+																											<label for="knowledgeChoice1">1</label>
+																											<input type="radio" id="knowledgeChoice2" name="knowledge" value="2">
+																											<label for="knowledgeChoice2">2</label>
+																											<input type="radio" id="knowledgeChoice3" name="knowledge" value="3">
+																											<label for="knowledgeChoice3">3</label>
+																											<input type="radio" id="knowledgeChoice4" name="knowledge" value="4">
+																											<label for="knowledgeChoice4">4</label>
+																											<input type="radio" id="knowledgeChoice5" name="knowledge" value="5">
+																											<label for="knowledgeChoice5">5</label>
+																											<input type="radio" id="knowledgeChoice6" name="knowledge" value="6">
+																											<label for="knowledgeChoice6">6</label>
+																											<input type="radio" id="knowledgeChoice7" name="knowledge" value="7">
+																											<label for="knowledgeChoice7">7</label>
+																											<input type="radio" id="knowledgeChoice8" name="knowledge" value="8">
+																											<label for="knowledgeChoice8">8</label>
+																											<input type="radio" id="knowledgeChoice9" name="knowledge" value="9">
+																											<label for="knowledgeChoice9">9</label>
+																											<input type="radio" id="knowledgeChoice10" name="knowledge" value="10">
+																											<label for="knowledgeChoice10">10</label>
+																										</div>
+																										<div>
+																											<button type="submit">Submit</button>
+																										</div>
+																										</form>
+                                              </div>
+                                            </div>
+                                        </div>
+                                    <!-- </div>
+                                </div> -->
+                          </div>
+                      </div>
+                  </div>
+                    <div class="app-wrapper-footer">
+                        <div class="app-footer">
+                            <div class="app-footer__inner">
+                                <div class="app-footer-right">
+                                    <ul class="nav">
+                                        <!-- <li class="nav-item">
+                                            <a href="javascript:void(0);" class="nav-link">
+                                                Footer Link 1
+                                            </a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a href="javascript:void(0);" class="nav-link">
+
+                                                Footer Link 2
+                                            </a>
+                                        </li> -->
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+								</div>
+<script type="text/javascript" src="./assets/scripts/main.js"></script></body>
+</html>
+
+<!-- <head>
 	<title>
 		Just testing
 	</title>
@@ -103,4 +301,4 @@
 		</form>
 	<pre id="log3">
 	</pre>
-</body>
+</body> -->
