@@ -1,0 +1,261 @@
+<html lang="en">
+<head>
+	<title>Ajude o Comércio Local</title>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+<!--===============================================================================================-->
+	<link rel="icon" type="image/png" href="{{ url_for('static', filename='images/icons/favicon.ico')}}"/>
+<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='vendor/bootstrap/css/bootstrap.min.css') }}">
+<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='fonts/font-awesome-4.7.0/css/font-awesome.min.css') }}">
+<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='fonts/Linearicons-Free-v1.0.0/icon-font.min.css')}}">
+<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='vendor/animate/animate.css')}}">
+<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='vendor/css-hamburgers/hamburgers.min.css')}}">
+<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='vendor/animsition/css/animsition.min.css')}}">
+<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='vendor/select2/select2.min.css')}}">
+<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='vendor/daterangepicker/daterangepicker.css')}}">
+<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='styles/css/util.css')}}">
+	<link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='styles/css/main.css')}}">
+<!--===============================================================================================-->
+</head>
+<body>
+
+	<div class="limiter">
+		<div class="container-login100">
+			<div class="wrap-login100 col-md-6 p-l-65 p-r-65 p-t-25 p-b-50">
+				<form class="login100-form validate-form" method = "post" action="/submit">
+					<span class="login100-form-title p-b-33">
+					</span>
+					<h2><center>Ajude os Comércios Locais</center></h2>
+					<br>
+					<p>
+
+						{% with messages = get_flashed_messages() %}
+  						{% if messages %}
+    						<script>
+      							var messages = {{ messages | safe }};
+      							for (var i=0; i<messages.length; i++) {
+        						alert(messages[i]);
+      							}
+    						</script>
+  						{% endif %}
+						{% endwith %}
+					</p>
+					<p>Quer ajudar os comércios locais a sobrevierem ao COVID-19? <br>Negocie créditos de serviço futuro, ajude quem não tem renda para conseguir se sustentar e, quando tudo melhorar, você usa o serviço já comprado!
+						<br>
+						<br>
+						Preencha como pode ajudar sua comunidade e encontraremos os necessitados para você.
+						<br>
+						<br>
+						<em>Campos com * são obrigatórios, para facilitar o contato do prestador</em>
+					</p>
+
+					<br>
+					<!-- Nome -->
+					<p>Nome*:</p>
+					<div class="wrap-input100 validate-input" >
+						<input class="input100" type="text" name="inputName" placeholder="Seu nome" value="" required>
+						<span class="focus-input100-1"></span>
+						<span class="focus-input100-2"></span>
+					</div>
+
+					<!-- Email -->
+					<br>
+					<p>Email*:</p>
+					<div class="wrap-input100 validate-input" data-validate = "Valid email is required: ex@abc.xyz">
+						<input class="input100" type="text" name="inputEmail" placeholder="Seu e-mail" value="" required>
+						<span class="focus-input100-1"></span>
+						<span class="focus-input100-2"></span>
+					</div>
+
+					<!-- Telefone -->
+					<br>
+					<p>Telefone*:</p>
+					<div class="wrap-input100 validate-input" data-validate = "Valid phone is required">
+						<input class="input100" type="text" name="inputPhone" placeholder="Telefone" value="" required>
+						<span class="focus-input100-1"></span>
+						<span class="focus-input100-2"></span>
+					</div>
+
+					<!-- Cidade -->
+					<br>
+					<p>Cidade*:</p>
+					<div class="wrap-input100 validate-input">
+						<input class="input100" type="text" name="inputCity" placeholder="Cidade" value="" required>
+						<span class="focus-input100-1"></span>
+						<span class="focus-input100-2"></span>
+					</div>
+
+					<!-- Serviço -->
+					<br>
+					<p>Serviço Futuro*:</p>
+					<div class="w-col w-col-6">
+						<table>
+							<tr>
+								<label class="w-checkbox">
+									<input type="checkbox" name="checkbox" class="w-checkbox-input" value = "1">
+									<span  class="w-form-label">Cabelereiro</span>
+								</label>
+							</tr>
+							<br>
+							<tr>
+								<label class="w-checkbox">
+									<input type="checkbox" id="checkbox-2" name="checkbox" data-name="Checkbox 2" class="w-checkbox-input" value = "2">
+									<span id="Role" class="w-form-label">Manicure e Pedicure</span>
+								</label>
+							</tr>
+							<br>
+							<tr>
+								<label class="w-checkbox">
+									<input type="checkbox" id="checkbox-4" name="checkbox" data-name="Checkbox 4" class="w-checkbox-input" value = "3">
+									<span class="w-form-label">Procedimentos Estéticos</span>
+								</label>
+							</tr>
+							<br>
+							<tr>
+								<label class="w-checkbox">
+									<input type="checkbox" id="checkbox-5" name="checkbox" data-name="Checkbox 5" class="w-checkbox-input" value = "4">
+									<span class="w-form-label">Diarista</span>
+								</label>
+							</tr>
+							<br>
+							<tr>
+								<label class="w-checkbox">
+									<input type="checkbox" id="checkbox-3" name="checkbox" data-name="Checkbox 3" class="w-checkbox-input" value = "5">
+									<span class="w-form-label">Dentista</span>
+								</label>
+							</tr>
+							<br>
+							<tr>
+								<label class="w-checkbox">
+									<input type="checkbox" id="checkbox-6" name="checkbox" data-name="Checkbox 6" class="w-checkbox-input" value = "6">
+									<span class="w-form-label">Doações</span>
+								</label>
+							</tr>
+							<br>
+							<tr>
+								<label class="w-checkbox">
+									<input type="checkbox" id="checkbox-6" name="checkbox" data-name="Checkbox 6" class="w-checkbox-input" value = "7">
+									<span class="w-form-label">Outros Servicos</span>
+								</label>
+							</tr>
+						</table>
+					</div>
+
+
+					<!-- Comentários -->
+
+
+
+					<div class="container-login100-form-btn m-t-20">
+						<button class="login100-form-btn">
+							Quero ajudar!
+						</button type="submit" value="Submit">
+					</div>
+
+					<div class="text-center p-t-45 p-b-4">
+						<span class="txt1">
+							Criado por:
+						</span>
+
+						<a href="https://www.linkedin.com/in/andr%C3%A9-cordeiro-3296b372/" class="txt2 hov1">
+							André C.
+						</a>
+						<br>
+						<br>
+						<font size = "2px"><em>Alguma Dúvida? Fale comigo, clique no link acima</em></font>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+
+
+
+<!--===============================================================================================-->
+	<script src="{{ url_for('static',filename='vendor/jquery/jquery-3.2.1.min.js')}}"></script>
+<!--===============================================================================================-->
+	<script src="{{ url_for('static',filename='vendor/animsition/js/animsition.min.js')}}"></script>
+<!--===============================================================================================-->
+	<script src="{{ url_for('static',filename='vendor/bootstrap/js/popper.js')}}"></script>
+	<script src="{{ url_for('static',filename='vendor/bootstrap/js/bootstrap.min.js')}}"></script>
+<!--===============================================================================================-->
+	<script src="{{ url_for('static',filename='vendor/select2/select2.min.js')}}"></script>
+	<script src="{{ url_for('static',filename='vendor/daterangepicker/moment.min.js')}}"></script>
+	<script src="{{ url_for('static',filename='vendor/daterangepicker/daterangepicker.js')}}"></script>
+<!--===============================================================================================-->
+	<script src="{{ url_for('static',filename='vendor/countrowntime/countrowntime.js')}}"></script>
+<!--===============================================================================================-->
+	<script src="{{ url_for('static',filename='js/main.js')}}"></script>
+
+</body>
+</html>
+
+
+
+<!--
+
+
+
+
+<body>
+	<title>Login V19</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1"><link rel="icon" type="image/png" href="{{ url_for('static', filename='images/icons/favicon.ico')}}"/>
+<link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='vendor/bootstrap/css/bootstrap.min.css') }}">
+<link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='fonts/font-awesome-4.7.0/css/font-awesome.min.css') }}">
+<link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='fonts/Linearicons-Free-v1.0.0/icon-font.min.css')}}">
+<link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='vendor/animate/animate.css')}}">
+<link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='vendor/css-hamburgers/hamburgers.min.css')}}">
+<link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='vendor/animsition/css/animsition.min.css')}}">
+<link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='vendor/select2/select2.min.css')}}">
+<link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='vendor/daterangepicker/daterangepicker.css')}}">
+<link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='styles/css/util.css')}}">
+<link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='styles/css/main.css')}}">
+<link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='styles/css/voluntary.css')}}">
+<script src="{{ url_for('static',filename='styles/js/voluntary.js')}}"></script>
+</head>
+
+			<section id="contact-form" class="contact-form">
+  <div class="w-container">
+    <h2>Ajude Local:</h2>
+    <p>Compre créditos de serviço adiantado, ajude quem não tem renda para conseguir se sustentar e, quando tudo melhorar, você usa o serviço já comprado!<br><br>Preencha como pode ajudar sua comunidade e encontraremos os necessitados para você.</p>
+    <div id="formInstructions" class="small-text"><em>Campos com * são obrigatórios, para facilitar o contato do prestador</em></div>
+    <div class="w-form">
+      <form id="wf-form-Contact-Form" name="wf-form-Contact-Form" data-name="Contact Form">
+        <div class="contact-form-grid">
+          <div id="w-node-51454d8f483c-c6dc639b"><label for="First-Name" id="contact-first-name">Nome*</label><input type="text" class="text-field w-input" maxlength="256" name="First-Name" data-name="First Name" placeholder="Digite seu nome" id="Name" required=""></div>
+          <div id="w-node-51454d8f4844-c6dc639b"><label for="Email" id="contact-email">Email *</label><input type="email" class="w-input" maxlength="256" name="Email" data-name="Email" placeholder="Digite seu melhor e-mail" id="Email" required=""></div>
+          <div id="w-node-51454d8f4848-c6dc639b"><label for="Contact-Phone-Number" id="contact-phone">Telefone *</label><input type="tel" class="w-input" maxlength="256" name="Contact-Phone-Number" data-name="Contact Phone Number" placeholder="Digite seu telefone" id="Phone-number" required=""></div><label for="Contact-Phone-Number-3" id="contact-phone">Cidade:</label>
+          <div id="formInstructions" class="small-text"><em>Dados sigilosos e protegidos.</em></div><input type="tel" class="w-input" maxlength="256" name="Contact-Phone-Number-3" data-name="Contact Phone Number 3" placeholder="EX: São Paulo - SP" id="City" required="">
+          <div id="w-node-51454d8f484c-c6dc639b">
+            <div><label for="Last-Name" id="contact-last-name">Serviço que compraria antecipado*:</label>
+              <div class="w-row">
+                <div class="w-col w-col-6"><label class="w-checkbox"><input type="checkbox" id="checkbox" name="checkbox" data-name="Checkbox" class="w-checkbox-input"><span id="Role" class="w-form-label">Cabelereiro</span></label><label class="w-checkbox"><input type="checkbox" id="checkbox-2" name="checkbox-2" data-name="Checkbox 2" class="w-checkbox-input"><span id="Role" class="w-form-label">Manicure e Pedicure</span></label><label class="w-checkbox"><input type="checkbox" id="checkbox-4" name="checkbox-4" data-name="Checkbox 4" class="w-checkbox-input"><span class="w-form-label">Procedimentos Estéticos</span></label><label class="w-checkbox"><input type="checkbox" id="checkbox-5" name="checkbox-5" data-name="Checkbox 5" class="w-checkbox-input"><span class="w-form-label">Diarista</span></label></div>
+                <div class="w-col w-col-6"><label class="w-checkbox"><input type="checkbox" id="checkbox-3" name="checkbox-3" data-name="Checkbox 3" class="w-checkbox-input"><span class="w-form-label">Dentista</span></label><label class="w-checkbox"><input type="checkbox" id="checkbox-6" name="checkbox-6" data-name="Checkbox 6" class="w-checkbox-input"><span class="w-form-label">Doações</span></label><label class="w-checkbox"><input type="checkbox" id="checkbox-6" name="checkbox-6" data-name="Checkbox 6" class="w-checkbox-input"><span class="w-form-label">Outros</span></label></div>
+              </div>
+            </div>
+          </div>
+        </div><label for="Contact-Phone-Number-2" id="contact-phone">Comentários:</label><textarea name="field" maxlength="5000" id="field" class="w-input"></textarea><input type="submit" value="Submit" data-wait="Please wait..." class="w-button"></form>
+      <div class="w-form-done">
+        <div>Thank you! Your submission has been received!</div>
+      </div>
+      <div class="w-form-fail">
+        <div>Oops! Something went wrong while submitting the form.</div>
+      </div>
+    </div>
+  </div>
+</section>
+<script src="https://d3e54v103j8qbb.cloudfront.net/js/jquery-3.4.1.min.220afd743d.js?site=5e758c489105fa442cdc639a" type="text/javascript" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+<script src="js/webflow.js" type="text/javascript"></script>
+  <span style="color: rgb(136, 136, 136);"></body>
+
+-->
