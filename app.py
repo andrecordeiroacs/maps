@@ -114,8 +114,8 @@ def form_submit_server():
         conn.commit()
         cursor.close()
         conn.close()
-
-	message = Mail(
+        
+        message = Mail(
               from_email='ajudelocal@gmail.com',
               to_emails='andrecordeiroacs@gmail.com'             
               )
