@@ -59,7 +59,7 @@ def form_submit():
         if (len(row2) > 0):
             message = Mail(
             from_email='ajudelocal@gmail.com',
-            to_emails=str(_email[0][0])             
+            to_emails=str(_email)             
             )
        
             message.template_id = 'd-641a0020a8174bb5ad817e67dc7b9dac'
