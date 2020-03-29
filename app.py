@@ -59,7 +59,7 @@ def form_submit():
         if (len(row2) > 0):
             message = Mail(
             from_email='ajudelocal@gmail.com',
-            to_emails='andrecordeiroacs@gmail.com'             
+            to_emails=str(_email[0][0])             
             )
        
             message.template_id = 'd-641a0020a8174bb5ad817e67dc7b9dac'
@@ -76,7 +76,7 @@ def form_submit():
         else: 
             message = Mail(
             from_email='ajudelocal@gmail.com',
-            to_emails='andrecordeiroacs@gmail.com'             
+            to_emails=_email             
             )
              
             message.template_id = 'd-9b18a6dffbc948e3bd83622a7f2eb5f1'
@@ -117,7 +117,7 @@ def form_submit_server():
         
         message = Mail(
               from_email='ajudelocal@gmail.com',
-              to_emails='andrecordeiroacs@gmail.com'             
+              to_emails=_email             
               )
        
         message.template_id = 'd-b97119cd37ea4490b5b2a7870cbb81f3'
