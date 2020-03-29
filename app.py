@@ -35,10 +35,10 @@ def form_submit():
 	_email = request.form['inputEmail']
 	_phone = request.form['inputPhone']
 	_city = request.form['inputCity']
-        _services = str(request.form.getlist('checkbox'))
+    _services = str(request.form.getlist('checkbox'))
 	_comments = request.form['inputComments']
-        flash('Obrigado! Em breve entraremos em contato com voce!')
-        print("Olha leeee2")
+    flash('Obrigado! Em breve entraremos em contato com voce!')
+    print("Olha leeee2")
 	print(_services)
 	lead_id = str(uuid.uuid1())
 
@@ -61,10 +61,10 @@ def form_submit_server():
 	_email = request.form['inputEmail']
 	_phone = request.form['inputPhone']
 	_city = request.form['inputCity']
-        _services = str(request.form.getlist('checkbox'))
+    _services = str(request.form.getlist('checkbox'))
 	_comments = request.form['inputComments']
-        flash('Obrigado! Em breve entraremos em contato com voce!')
-        print("Olha leeee2")
+    flash('Obrigado! Em breve entraremos em contato com voce!')
+    print("Olha leeee2")
 	print(_services)
 	lead_id = str(uuid.uuid1())
 
