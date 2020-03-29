@@ -57,19 +57,18 @@ def form_submit():
 @app.route('/submit_server', methods=['POST'])
 def form_submit_server():
 	_name = request.form['inputName']
-	_email = request.form['inputEmail']
-	_phone = request.form['inputPhone']
-	_city = request.form['inputCity']
+        _email = request.form['inputEmail']
+        _phone = request.form['inputPhone']
+        _city = request.form['inputCity']
         _services = str(request.form.getlist('checkbox'))
-	_comments = request.form['inputComments']
+        _comments = request.form['inputComments']
         flash('Obrigado! Em breve entraremos em contato com voce!')
         print("Olha leeee2")
-	print(_services)
-	lead_id = str(uuid.uuid1())
-
-
-	#escrevendo no banco
-	conn = mysql.connect()
+        print(_services)
+        lead_id = str(uuid.uuid1())
+        
+        #escrevendo no banco
+        conn = mysql.connect()
         cursor = conn.cursor()
         user_sql = "INSERT INTO `ajudelocal_server`(`id`, `name`, `email`, `phone`, `city`, `services`, `comments`) VALUES (%s,%s,%s,%s,%s,%s,%s)"
         sql_where = (lead_id, _name, _email, _phone, _city, _services, _comments)
@@ -78,7 +77,7 @@ def form_submit_server():
         conn.commit()
         cursor.close()
         conn.close()
-	return redirect('/')
+        return redirect('/')
 
 
 if __name__ == "__main__":
