@@ -18,19 +18,69 @@ app.secret_key = "secret key"
 
 @app.route('/')
 def form_open():
-	return render_template('voluntary.html')
+	return render_template('index.html')
 
-@app.route('/submit', methods=['POST'])
+@app.route('/redirect1')
+def form_redirect1():
+        return render_template('voluntary.html')
+
+@app.route('/redirect2')
+def form_redirect2():
+        return render_template('server.html')
+
+
+@app.route('/submit_voluntary', methods=['POST'])
 def form_submit():
 	_name = request.form['inputName']
 	_email = request.form['inputEmail']
 	_phone = request.form['inputPhone']
 	_city = request.form['inputCity']
-        _services = request.form.getlist('checkbox')
-	flash('Obrigado! Em breve entraremos em contato com voce!')
-        print("Olha leeee")
+        _services = str(request.form.getlist('checkbox'))
+	_comments = request.form['inputComments']
+        flash('Obrigado! Em breve entraremos em contato com voce!')
+        print("Olha leeee2")
 	print(_services)
-        return redirect('/')
+	lead_id = str(uuid.uuid1())
+
+
+	#escrevendo no banco
+	conn = mysql.connect()
+        cursor = conn.cursor()
+        user_sql = "INSERT INTO `ajudelocal_voluntary`(`id`, `name`, `email`, `phone`, `city`, `services`, `comments`) VALUES (%s,%s,%s,%s,%s,%s,%s)"
+        sql_where = (lead_id, _name, _email, _phone, _city, _services, _comments)
+        cursor.execute(user_sql, sql_where)
+        row = cursor.fetchall()
+        conn.commit()
+        cursor.close()
+        conn.close()
+	return redirect('/')
+
+@app.route('/submit_server', methods=['POST'])
+def form_submit_server():
+	_name = request.form['inputName']
+	_email = request.form['inputEmail']
+	_phone = request.form['inputPhone']
+	_city = request.form['inputCity']
+        _services = str(request.form.getlist('checkbox'))
+	_comments = request.form['inputComments']
+        flash('Obrigado! Em breve entraremos em contato com voce!')
+        print("Olha leeee2")
+	print(_services)
+	lead_id = str(uuid.uuid1())
+
+
+	#escrevendo no banco
+	conn = mysql.connect()
+        cursor = conn.cursor()
+        user_sql = "INSERT INTO `ajudelocal_server`(`id`, `name`, `email`, `phone`, `city`, `services`, `comments`) VALUES (%s,%s,%s,%s,%s,%s,%s)"
+        sql_where = (lead_id, _name, _email, _phone, _city, _services, _comments)
+        cursor.execute(user_sql, sql_where)
+        row = cursor.fetchall()
+        conn.commit()
+        cursor.close()
+        conn.close()
+	return redirect('/')
+
 
 if __name__ == "__main__":
     app.secret_key = 'secret key'

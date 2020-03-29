@@ -1,129 +1,128 @@
-<!doctype html>
 <html lang="en">
-
 <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta http-equiv="Content-Language" content="en">
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-    <title>ChartJS - Huge selection of charts created with the React ChartJS Plugin</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, shrink-to-fit=yes" />
-    <meta name="description" content="Huge selection of charts created with the React ChartJS Plugin">
-    <meta name="msapplication-tap-highlight" content="no">
-    <!--
-    =========================================================
-    * ArchitectUI HTML Theme Dashboard - v1.0.0
-    =========================================================
-    * Product Page: https://dashboardpack.com
-    * Copyright 2019 DashboardPack (https://dashboardpack.com)
-    * Licensed under MIT (https://github.com/DashboardPack/architectui-html-theme-free/blob/master/LICENSE)
-    =========================================================
-    * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-    -->
-<link href="{{ url_for('static',filename='styles/./main.css')}}" rel="stylesheet"></head>
+	<title>Ajude o Comércio Local</title>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+<!--===============================================================================================-->
+	<link rel="icon" type="image/png" href="{{ url_for('static', filename='images/icons/favicon.ico')}}"/>
+<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='vendor/bootstrap/css/bootstrap.min.css') }}">
+<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='fonts/font-awesome-4.7.0/css/font-awesome.min.css') }}">
+<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='fonts/Linearicons-Free-v1.0.0/icon-font.min.css')}}">
+<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='vendor/animate/animate.css')}}">
+<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='vendor/css-hamburgers/hamburgers.min.css')}}">
+<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='vendor/animsition/css/animsition.min.css')}}">
+<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='vendor/select2/select2.min.css')}}">
+<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='vendor/daterangepicker/daterangepicker.css')}}">
+<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='styles/css/util.css')}}">
+	<link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='styles/css/main.css')}}">
+<!--===============================================================================================-->
+</head>
 <body>
-    <div class="app-container app-theme-white body-tabs-shadow fixed-sidebar fixed-header">
-        <div class="app-header header-shadow">
-            <div class="app-header__content">
-                    <ul class="header-menu nav">
-                        {%if admin != "1"%}
-                        <li class="nav-item">
-                            <a href="/createuser" class="nav-link">
-                                <i class="nav-link-icon fa fa-database"> </i>
-                                Admin
-                            </a>
-                        </li>
-                        {%endif%}
-                        <li class="btn-group nav-item my-lg-0">
-                            <a href="/logout" class="nav-link">
-                                <i class="nav-link-icon fa fa-edit"></i>
-                                Logout
-                            </a>
-                        </li>
-                    </ul>
-            </div>
-        </div>
-                <div class="app-main__outer">
-                    <div class="app-main__inner">
-                        <div class="app-page-title">
-                            <div class="page-title-wrapper">
-                                <div class="page-title-heading">
-                                    <div class="page-title-icon">
-                                        <i class="pe-7s-bandaid icon-gradient bg-amy-crisp">
-                                        </i>
-                                    </div>
-                                    <div>ChartJS
-                                        <div class="page-title-subheading">Huge selection of charts created with the React ChartJS Plugin
-                                        </div>
-                                    </div>
-                                </div>
 
-                                </div>
-                              </div>
-                        </div>
+	<div class="limiter">
+		<div class="container-login100">
+			<div class="wrap-login100 col-md-6 p-l-65 p-r-65 p-t-25 p-b-50">
+					<span class="login100-form-title p-b-33">
+					</span>
+					<h1><center>Ajude os Comércios Locais!</center></h1>
+					<br>
+					<p>
 
-                        <div class="tab-content">
-                            <div class="tab-pane tabs-animation fade show active" id="tab-content-0" role="tabpanel">
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <div class="main-card mb-3 card">
-                                            <div class="card-body">
-                                              <h5 class="card-title">Select your Employee</h5>
-                                              <div>
-                                                <form action="/employee", method = "post">
-                                                    <p></p>
-                                                    {%for i in range(0,k)%}
-                                                      <div>
-                                                        <input type="radio" name="employee" value="{{row2[i][0]}}" required />
-                                                        <label>{{row2[i][1]}}<label>
-                                                      </div>
-                                                    {%endfor%}
-                                                      <button type="submit">Submit</button>
-                                                </form>
-                                              </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div class="main-card mb-3 card">
-                                            <div class="card-body">
-                                                <h5 class="card-title">Select your Employee to See Surveys</h5>
-                                                {%for i in range(0,k)%}
-                                                  <div>
-                                                    <a href="/acessSurvey/{{row2[i][0]}}">{{row2[i][1]}}</a>
-                                                  </div>
-                                                {%endfor%}
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                          </div>
-                      </div>
-                  </div>
-                    <div class="app-wrapper-footer">
-                        <div class="app-footer">
-                            <div class="app-footer__inner">
-                                <div class="app-footer-right">
-                                    <ul class="nav">
-                                        <li class="nav-item">
-                                            <a href="javascript:void(0);" class="nav-link">
-                                                Footer Link 1
-                                            </a>
-                                        </li>
-                                        <li class="nav-item">
-                                            <a href="javascript:void(0);" class="nav-link">
-                                                <!-- <div class="badge badge-success mr-1 ml-0">
-                                                    <small>NEW</small>
-                                                </div> -->
-                                                Footer Link 2
-                                            </a>
-                                        </li>
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
-                    </div>    </div>
-        </div>
-    </div>
-<script type="text/javascript" src="./assets/scripts/main.js"></script></body>
+						{% with messages = get_flashed_messages() %}
+  						{% if messages %}
+    						<script>
+      							var messages = {{ messages | safe }};
+      							for (var i=0; i<messages.length; i++) {
+        						alert(messages[i]);
+      							}
+    						</script>
+  						{% endif %}
+						{% endwith %}
+					</p>
+					<table table-layout = "fixed" width= "100%">
+					<td width = "50%">
+							<form class="login100-form validate-form col-sm p-l-15 p-r-25 p-t-15 p-b-15" action="/redirect1" border = "1px solid red">
+							<h3><center>Apoiador</center></h3>
+							<br>
+							<p>Quer ajudar algum empreededor a sobrevier ao isolamento pelo COVID-19?
+								<br>
+								<br>
+								Compre créditos de serviço futuro, pague ao empreendedor, ele receberá renda agora e, quando tudo melhorar, você utiliza o serviço já comprado!
+								<br>
+								<br>
+								Preencha como pode ajudar os comércios locais e encontraremos os empreendedores para você.
+							</p>
+								<div class="container-login100-form-btn m-t-20">
+									<button class="login100-form-btn">
+										Quero ajudar!
+									</button type="submit" value="Submit_Voluntary">
+								</div>
+							</form>
+						</td>
+						<td  width = "50%">
+							<form class="login100-form validate-form col-sm p-l-25 p-r-15 p-t-15 p-b-15" action="/redirect2" border = "1px solid red">
+							<h3><center>Comércio Local</center></h3>
+							<br>
+							<p>É empreendedor e quer ajuda para sobrevier ao isolamento pelo COVID-19?
+								<br>
+								<br>
+								Venda créditos de serviço futuro, recebera a renda agora e, quando tudo melhorar, você presta o serviço já vendido!
+								<br>
+								<br>
+								Preencha como pode ajudar sua comunidade e encontraremos os compradores para você.
+							</p>
+								<div class="container-login100-form-btn m-t-20">
+									<button class="login100-form-btn">
+										Preciso de ajuda!
+									</button type="submit" value="Submit_Server">
+								</div>
+							</form>
+					</td>
+				</table>
+
+					<div class="text-center p-t-45 p-b-4">
+						<span class="txt1">
+							Criado por:
+						</span>
+
+						<a href="https://www.linkedin.com/in/andr%C3%A9-cordeiro-3296b372/" class="txt2 hov1">
+							André C.
+						</a>
+						<br>
+						<br>
+						<font size = "2px"><em>Alguma Dúvida? Fale comigo, clique no link acima</em></font>
+					</div>
+
+			</div>
+		</div>
+	</div>
+
+
+
+<!--===============================================================================================-->
+	<script src="{{ url_for('static',filename='vendor/jquery/jquery-3.2.1.min.js')}}"></script>
+<!--===============================================================================================-->
+	<script src="{{ url_for('static',filename='vendor/animsition/js/animsition.min.js')}}"></script>
+<!--===============================================================================================-->
+	<script src="{{ url_for('static',filename='vendor/bootstrap/js/popper.js')}}"></script>
+	<script src="{{ url_for('static',filename='vendor/bootstrap/js/bootstrap.min.js')}}"></script>
+<!--===============================================================================================-->
+	<script src="{{ url_for('static',filename='vendor/select2/select2.min.js')}}"></script>
+	<script src="{{ url_for('static',filename='vendor/daterangepicker/moment.min.js')}}"></script>
+	<script src="{{ url_for('static',filename='vendor/daterangepicker/daterangepicker.js')}}"></script>
+<!--===============================================================================================-->
+	<script src="{{ url_for('static',filename='vendor/countrowntime/countrowntime.js')}}"></script>
+<!--===============================================================================================-->
+	<script src="{{ url_for('static',filename='js/main.js')}}"></script>
+
+</body>
 </html>
