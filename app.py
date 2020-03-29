@@ -41,7 +41,7 @@ def form_submit():
         print("Olha leeee2")
         print(_services)
         lead_id = str(uuid.uuid1())
-        
+
         #escrevendo no banco
         conn = mysql.connect()
         cursor = conn.cursor()
@@ -50,8 +50,45 @@ def form_submit():
         cursor.execute(user_sql, sql_where)
         row = cursor.fetchall()
         conn.commit()
+        user_sql2 = "SELECT * FROM `ajudelocal_server` WHERE `city` = %s ORDER BY `created_at` DESC LIMIT 1"
+        cursor.execute(user_sql2, _city)
+        row2 = cursor.fetchall()
+        conn.commit() 
         cursor.close()
         conn.close()
+        if (len(row2) > 0):
+            message = Mail(
+            from_email='ajudelocal@gmail.com',
+            to_emails='andrecordeiroacs@gmail.com'             
+            )
+       
+            message.template_id = 'd-641a0020a8174bb5ad817e67dc7b9dac'
+            message.dynamic_template_data = {'Sender_Name': row2[0][2], 'Sender_City': row2[0][5], 'Sender_Email': row2[0][3] , 'Sender_Zip': row2[0][4] }
+            try:
+                sg = SendGridAPIClient("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")
+                response = sg.send(message)
+                print(response.status_code)
+                print(response.body)
+                print(response.headers)
+            except Exception as e:
+                print(e)
+                print("Deu Ruim")
+        else: 
+            message = Mail(
+            from_email='ajudelocal@gmail.com',
+            to_emails='andrecordeiroacs@gmail.com'             
+            )
+             
+            message.template_id = 'd-9b18a6dffbc948e3bd83622a7f2eb5f1'
+            try:
+                sg = SendGridAPIClient("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")
+                response = sg.send(message)
+                print(response.status_code)
+                print(response.body)
+                print(response.headers)
+            except Exception as e:
+                print(e)
+                print("Deu Ruim sem custom")
         return redirect('/')
 
 @app.route('/submit_server', methods=['POST'])
@@ -66,7 +103,7 @@ def form_submit_server():
         print("Olha leeee2")
         print(_services)
         lead_id = str(uuid.uuid1())
-        
+
         #escrevendo no banco
         conn = mysql.connect()
         cursor = conn.cursor()
@@ -77,7 +114,23 @@ def form_submit_server():
         conn.commit()
         cursor.close()
         conn.close()
-        return redirect('/')
+
+	message = Mail(
+              from_email='ajudelocal@gmail.com',
+              to_emails='andrecordeiroacs@gmail.com'             
+              )
+       
+        message.template_id = 'd-b97119cd37ea4490b5b2a7870cbb81f3'
+        try:
+              sg = SendGridAPIClient("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")
+              response = sg.send(message)
+              print(response.status_code)
+              print(response.body)
+              print(response.headers)
+        except Exception as e:
+              print(e)
+              print("Deu Ruim")
+	return redirect('/')
 
 
 if __name__ == "__main__":
