@@ -31,29 +31,28 @@ def form_redirect2():
 
 @app.route('/submit_voluntary', methods=['POST'])
 def form_submit():
-    _name = request.form['inputName']
-    _email = request.form['inputEmail']
-    _phone = request.form['inputPhone']
-    _city = request.form['inputCity']
-    _services = str(request.form.getlist('checkbox'))
-    _comments = request.form['inputComments']
-    flash('Obrigado! Em breve entraremos em contato com voce!')
-    print("Olha leeee2")
-    print(_services)
-    lead_id = str(uuid.uuid1())
-
-
-    #escrevendo no banco
-    conn = mysql.connect()
-    cursor = conn.cursor()
-    user_sql = "INSERT INTO `ajudelocal_voluntary`(`id`, `name`, `email`, `phone`, `city`, `services`, `comments`) VALUES (%s,%s,%s,%s,%s,%s,%s)"
-    sql_where = (lead_id, _name, _email, _phone, _city, _services, _comments)
-    cursor.execute(user_sql, sql_where)
-    row = cursor.fetchall()
-    conn.commit()
-    cursor.close()
-    conn.close()
-    return redirect('/')
+        _name = request.form['inputName']
+        _email = request.form['inputEmail']
+        _phone = request.form['inputPhone']
+        _city = request.form['inputCity']
+        _services = str(request.form.getlist('checkbox'))
+        _comments = request.form['inputComments']
+        flash('Obrigado! Em breve entraremos em contato com voce!')
+        print("Olha leeee2")
+        print(_services)
+        lead_id = str(uuid.uuid1())
+        
+        #escrevendo no banco
+        conn = mysql.connect()
+        cursor = conn.cursor()
+        user_sql = "INSERT INTO `ajudelocal_voluntary`(`id`, `name`, `email`, `phone`, `city`, `services`, `comments`) VALUES (%s,%s,%s,%s,%s,%s,%s)"
+        sql_where = (lead_id, _name, _email, _phone, _city, _services, _comments)
+        cursor.execute(user_sql, sql_where)
+        row = cursor.fetchall()
+        conn.commit()
+        cursor.close()
+        conn.close()
+        return redirect('/')
 
 @app.route('/submit_server', methods=['POST'])
 def form_submit_server():
