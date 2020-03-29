@@ -130,7 +130,7 @@ def form_submit_server():
         except Exception as e:
               print(e)
               print("Deu Ruim")
-	return redirect('/')
+        return redirect('/')
 
 
 if __name__ == "__main__":
