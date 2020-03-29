@@ -34,7 +34,7 @@ def form_submit():
 	_name = request.form['inputName']
 	_email = request.form['inputEmail']
 	_phone = request.form['inputPhone']
-        _city = request.form['inputCity']
+	_city = request.form['inputCity']
         _services = str(request.form.getlist('checkbox'))
 	_comments = request.form['inputComments']
         flash('Obrigado! Em breve entraremos em contato com voce!')
