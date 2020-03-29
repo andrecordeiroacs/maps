@@ -56,7 +56,7 @@ def form_submit():
 
 @app.route('/submit_server', methods=['POST'])
 def form_submit_server():
-	_name = request.form['inputName']
+        _name = request.form['inputName']
         _email = request.form['inputEmail']
         _phone = request.form['inputPhone']
         _city = request.form['inputCity']
