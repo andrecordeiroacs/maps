@@ -105,7 +105,7 @@ def form_submit():
         _email = request.form['inputEmail']
         _phone = request.form['inputPhone']
         _city = request.form['cidade']
-	_cep = request.form['cep']
+        _cep = request.form['cep']
         _bairro = request.form['bairro']
         _estado = request.form['estado']
         _services = str(request.form.getlist('checkbox'))
