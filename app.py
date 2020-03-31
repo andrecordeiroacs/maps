@@ -13,7 +13,7 @@ import os
 
 # cache = Cache(config={'CACHE_TYPE': 'simple'})
 app = Flask(__name__)
-# cache.init_app(app)
+# cache.init_app(app)u
 app.secret_key = "secret key"
 
 @app.route('/')
@@ -28,40 +28,112 @@ def form_redirect1():
 def form_redirect2():
         return render_template('server.html')
 
+@app.route('/thankyou/<voluntary_id>')
+def form_thankyou(voluntary_id):
+        #Pegando as informacoes
+
+        conn = mysql.connect()
+        cursor = conn.cursor()
+        user_sql = "SELECT `city`, `services`, `bairro` FROM `ajudelocal_voluntary` WHERE `id` = %s"
+        cursor.execute(user_sql, voluntary_id)
+        row = cursor.fetchall()
+        conn.commit()
+
+        user_sql2 = "SELECT * FROM `ajudelocal_server` WHERE `city` = %s ORDER BY `created_at` DESC"
+        cursor.execute(user_sql2, row[0][0])
+        row2 = cursor.fetchall()
+        conn.commit()
+        cursor.close()
+        conn.close()
+        #print(row)
+        #print(row2)
+        
+        rows =  len(row2)
+        #match perfeito
+        i=0
+        match = 0
+        other_service_same_neighbor = 0
+        same_city_and_service = 0
+        same_city_other_service = 0
+        match_list = []
+        other_service_same_neighbor_list = []
+        same_city_and_service_list = []
+        same_city_other_service_list = []
+        same_city = 0
+
+        if(len(row2)>0):
+            same_city = 1
+            for i in range(rows):
+                #checa mesmo bairro
+                if(row2[i][9] == row[0][2]):
+                    #checa mesmo bairro e  servico
+                    if(row[0][1] in row2[i][6]):
+                        match_list.append(row2[i])
+                        match += 1
+                    #mesmo bairro, prem outro servico
+                    else:
+                        other_service_same_neighbor_list.append(row2[i])
+                        other_service_same_neighbor += 1
+                else:
+                    #checa mesma cidade e mesmo servico
+                    if(row[0][1] in row2[i][6]):
+                        same_city_and_service_list.append(row2[i])
+                        same_city_and_service += 1
+                    #mesma cidade e outro servico
+                    else:
+                        same_city_other_service_list.append(row2[i])
+                        same_city_other_service += 1
+        else:
+            same_city = 0
+        #print("Match Perfeito")
+        print(match_list)
+
+        #print("Na sua Cidade")
+        #print(same_city_and_service_list)
+
+        #print("No seu bairro")
+        #print(other_service_same_neighbor)
+
+        #print("Na sua cidade outro servico")
+        #print(same_city_other_service_list)
+        return render_template('thankyou.html', same_city = same_city, match = match, match_list = match_list, same_city_and_service = same_city_and_service, same_city_and_service_list = same_city_and_service_list, other_service_same_neighbor = other_service_same_neighbor, other_service_same_neighbor_list = other_service_same_neighbor_list, same_city_other_service = same_city_other_service, same_city_other_service_list = same_city_other_service_list)
 
 @app.route('/submit_voluntary', methods=['POST'])
 def form_submit():
         _name = request.form['inputName']
         _email = request.form['inputEmail']
         _phone = request.form['inputPhone']
-        _city = request.form['inputCity']
+        _city = request.form['cidade']
+	_cep = request.form['cep']
+        _bairro = request.form['bairro']
+        _estado = request.form['estado']
         _services = str(request.form.getlist('checkbox'))
         _comments = request.form['inputComments']
         flash('Obrigado! Em breve entraremos em contato com voce!')
-        print("Olha leeee2")
+        print("Olha leeee3")
         print(_services)
         lead_id = str(uuid.uuid1())
 
         #escrevendo no banco
         conn = mysql.connect()
         cursor = conn.cursor()
-        user_sql = "INSERT INTO `ajudelocal_voluntary`(`id`, `name`, `email`, `phone`, `city`, `services`, `comments`) VALUES (%s,%s,%s,%s,%s,%s,%s)"
-        sql_where = (lead_id, _name, _email, _phone, _city, _services, _comments)
+        user_sql = "INSERT INTO `ajudelocal_voluntary`(`id`, `name`, `email`, `phone`, `city`, `services`, `comments`, `cep`, `bairro`, `estado`) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"
+        sql_where = (lead_id, _name, _email, _phone, _city, _services, _comments, _cep, _bairro, _estado)
         cursor.execute(user_sql, sql_where)
         row = cursor.fetchall()
         conn.commit()
         user_sql2 = "SELECT * FROM `ajudelocal_server` WHERE `city` = %s ORDER BY `created_at` DESC LIMIT 1"
         cursor.execute(user_sql2, _city)
         row2 = cursor.fetchall()
-        conn.commit() 
+        conn.commit()
         cursor.close()
         conn.close()
         if (len(row2) > 0):
             message = Mail(
             from_email='ajudelocal@gmail.com',
-            to_emails=str(_email)             
+            to_emails='andrecordeiroacs@gmail.com'
             )
-       
+
             message.template_id = 'd-641a0020a8174bb5ad817e67dc7b9dac'
             message.dynamic_template_data = {'Sender_Name': row2[0][2], 'Sender_City': row2[0][5], 'Sender_Email': row2[0][3] , 'Sender_Zip': row2[0][4] }
             try:
@@ -73,12 +145,12 @@ def form_submit():
             except Exception as e:
                 print(e)
                 print("Deu Ruim")
-        else: 
+        else:
             message = Mail(
             from_email='ajudelocal@gmail.com',
-            to_emails=_email             
+            to_emails='andrecordeiroacs@gmail.com'
             )
-             
+
             message.template_id = 'd-9b18a6dffbc948e3bd83622a7f2eb5f1'
             try:
                 sg = SendGridAPIClient("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")
@@ -96,7 +168,10 @@ def form_submit_server():
         _name = request.form['inputName']
         _email = request.form['inputEmail']
         _phone = request.form['inputPhone']
-        _city = request.form['inputCity']
+        _city = request.form['cidade']
+	_cep = request.form['cep']
+        _bairro = request.form['bairro']
+        _estado = request.form['estado']
         _services = str(request.form.getlist('checkbox'))
         _comments = request.form['inputComments']
         flash('Obrigado! Em breve entraremos em contato com voce!')
@@ -107,19 +182,19 @@ def form_submit_server():
         #escrevendo no banco
         conn = mysql.connect()
         cursor = conn.cursor()
-        user_sql = "INSERT INTO `ajudelocal_server`(`id`, `name`, `email`, `phone`, `city`, `services`, `comments`) VALUES (%s,%s,%s,%s,%s,%s,%s)"
-        sql_where = (lead_id, _name, _email, _phone, _city, _services, _comments)
+        user_sql = "INSERT INTO `ajudelocal_server`(`id`, `name`, `email`, `phone`, `city`, `services`, `comments`, `cep`, `bairro`, `estado`) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"
+        sql_where = (lead_id, _name, _email, _phone, _city, _services, _comments, _cep, _bairro, _estado)
         cursor.execute(user_sql, sql_where)
         row = cursor.fetchall()
         conn.commit()
         cursor.close()
         conn.close()
-        
+
         message = Mail(
               from_email='ajudelocal@gmail.com',
-              to_emails=_email             
+              to_emails='andrecordeiroacs@gmail.com'
               )
-       
+
         message.template_id = 'd-b97119cd37ea4490b5b2a7870cbb81f3'
         try:
               sg = SendGridAPIClient("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")

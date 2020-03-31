@@ -1,0 +1,285 @@
+<html lang="en">
+<head>
+	<title>Ajude o Comércio Local</title>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+<!--===============================================================================================-->
+	<link rel="icon" type="image/png" href="{{ url_for('static', filename='images/icons/favicon.ico')}}"/>
+<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='vendor/bootstrap/css/bootstrap.min.css') }}">
+<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='fonts/font-awesome-4.7.0/css/font-awesome.min.css') }}">
+<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='fonts/Linearicons-Free-v1.0.0/icon-font.min.css')}}">
+<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='vendor/animate/animate.css')}}">
+<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='vendor/css-hamburgers/hamburgers.min.css')}}">
+<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='vendor/animsition/css/animsition.min.css')}}">
+<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='vendor/select2/select2.min.css')}}">
+<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='vendor/daterangepicker/daterangepicker.css')}}">
+<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='styles/css/util.css')}}">
+	<link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='styles/css/main.css')}}">
+<!--===============================================================================================-->
+</head>
+<body>
+
+	<div class="limiter">
+		<div class="container-login100">
+			<div class="wrap-login100 col-md-6 p-l-65 p-r-65 p-t-25 p-b-50">
+					<span class="login100-form-title p-b-33">
+					</span>
+					<h2><center>Comércios da sua região</center></h2>
+					<br>
+					<p>
+
+						{% with messages = get_flashed_messages() %}
+  						{% if messages %}
+    						<script>
+      							var messages = {{ messages | safe }};
+      							for (var i=0; i<messages.length; i++) {
+        						alert(messages[i]);
+      							}
+    						</script>
+  						{% endif %}
+						{% endwith %}
+					</p>
+
+					{%if same_city == 0%}
+						<!-- Sem comércios :() -->
+						<h3><center>Poxa, não encontramos comércios para você ainda.</center></h3> <br>
+						<p><center>Nossa base ainda não indicou alguém automaticamente. Porém nós iremos prospectar empreendedores e te procuramos em breve!</center></p>
+
+					{%else%}
+						{%if match > 0%}
+							<!-- Match Perfeito -->
+							<h3><center>Match perfeito!</center></h3>
+							<p><center>Mesmo bairro e serviço que procura</center></p>
+							{%for i in range(0,match)%}
+								<div class="card" style="width: 100%; background-color: rgba(84,207,170,1); padding-top: 0.3cm;">
+									<div class="card-body">
+										<h5 class="card-title">Nome: {{match_list[i][2]}}</h5> <br>
+										<h6 class="card-subtitle text-muted">Ramo: {{match_list[i][6]}}</h6><br>
+										<p class="card-text">Telefone: {{match_list[i][4]}}</p><br>
+										<p class="card-text">E-mail: {{match_list[i][3]}}</p><br>
+									</div>
+								</div>
+								<br>
+							{%endfor%}
+						{%endif%}
+						{%if same_city_and_service > 0%}
+							<!-- Mesma cidade e serviço -->
+							<h3><center>Na sua cidade</center></h3>
+							<p><center>Mesma cidade e serviço que procura</center></p>
+							{%for i in range(0,same_city_and_service)%}
+								<div class="card" style="width: 100%; background-color: rgba(169,231,213,1); padding-top: 0.3cm;">
+									<div class="card-body">
+										<h5 class="card-title">Nome: {{same_city_and_service_list[i][2]}}</h5> <br>
+										<h6 class="card-subtitle text-muted">Ramo: {{same_city_and_service_list[i][6]}}</h6><br>
+										<p class="card-text">Telefone: {{same_city_and_service_list[i][4]}}</p><br>
+										<p class="card-text">E-mail: {{same_city_and_service_list[i][3]}}</p><br>
+									</div>
+								</div>
+								<br>
+							{%endfor%}
+						{%endif%}
+						{%if other_service_same_neighbor > 0%}
+						<!-- Mesmo bairro e outro serviço -->
+						<h3><center>No seu bairro</center></h3>
+						<p><center>Mesmo bairro, porém não o mesmo serviço</center></p>
+							{%for i in range(0,other_service_same_neighbor)%}
+								<div class="card" style="width: 100%; background-color: white; padding-top: 0.3cm;">
+									<div class="card-body">
+										<h5 class="card-title">Nome: {{other_service_same_neighbor_list[i][2]}}</h5> <br>
+										<h6 class="card-subtitle text-muted">Ramo: {{other_service_same_neighbor_list[i][6]}}</h6><br>
+										<p class="card-text">Telefone: {{other_service_same_neighbor_list[i][4]}}</p><br>
+										<p class="card-text">E-mail: {{other_service_same_neighbor_list[i][3]}}</p><br>
+									</div>
+								</div>
+								<br>
+							{%endfor%}
+						{%endif%}
+						{%if same_city_other_service > 0%}
+							<!-- Mesmo cidade e outro serviço -->
+							<h3><center>Na sua cidade</center></h3>
+							<p><center>Mesma cidade, porém não o mesmo serviço</center></p>
+							{%for i in range(0,same_city_other_service)%}
+								<div class="card" style="width: 100%; background-color: white; padding-top: 0.3cm;">
+									<div class="card-body">
+										<h5 class="card-title">Nome: {{same_city_other_service_list[i][2]}}</h5> <br>
+										<h6 class="card-subtitle text-muted">Ramo: {{same_city_other_service_list[i][6]}}</h6><br>
+										<p class="card-text">Telefone: {{same_city_other_service_list[i][4]}}</p><br>
+										<p class="card-text">E-mail: {{same_city_other_service_list[i][3]}}</p><br>
+									</div>
+								</div>
+								<br>
+							{%endfor%}
+						{%endif%}
+					{%endif%}
+					<br>
+			</div>
+		</div>
+	</div>
+
+
+
+<!--===============================================================================================-->
+	<script src="{{ url_for('static',filename='vendor/jquery/jquery-3.2.1.min.js')}}"></script>
+<!--===============================================================================================-->
+	<script src="{{ url_for('static',filename='vendor/animsition/js/animsition.min.js')}}"></script>
+<!--===============================================================================================-->
+	<script src="{{ url_for('static',filename='vendor/bootstrap/js/popper.js')}}"></script>
+	<script src="{{ url_for('static',filename='vendor/bootstrap/js/bootstrap.min.js')}}"></script>
+<!--===============================================================================================-->
+	<script src="{{ url_for('static',filename='vendor/select2/select2.min.js')}}"></script>
+	<script src="{{ url_for('static',filename='vendor/daterangepicker/moment.min.js')}}"></script>
+	<script src="{{ url_for('static',filename='vendor/daterangepicker/daterangepicker.js')}}"></script>
+<!--===============================================================================================-->
+	<script src="{{ url_for('static',filename='vendor/countrowntime/countrowntime.js')}}"></script>
+<!--===============================================================================================-->
+	<script src="{{ url_for('static',filename='js/main.js')}}"></script>
+
+</body>
+</html>
+
+
+<!--
+<p>Quer ajudar os comércios locais a sobrevierem ao COVID-19? <br>Negocie créditos de serviço futuro, ajude quem não tem renda para conseguir se sustentar e, quando tudo melhorar, você usa o serviço já comprado!
+	<br>
+	<br>
+	Preencha como pode ajudar sua comunidade e encontraremos os necessitados para você.
+	<br>
+	<br>
+	<em>Campos com * são obrigatórios, para facilitar o contato do prestador</em>
+</p>
+
+<br>
+<p>Nome*:</p>
+<div class="wrap-input100 validate-input" >
+	<input class="input100" type="text" name="inputName" placeholder="Seu nome" value="" required>
+	<span class="focus-input100-1"></span>
+	<span class="focus-input100-2"></span>
+</div>
+
+<br>
+<p>Email*:</p>
+<div class="wrap-input100 validate-input" data-validate = "Valid email is required: ex@abc.xyz">
+	<input class="input100" type="text" name="inputEmail" placeholder="Seu e-mail" value="" required>
+	<span class="focus-input100-1"></span>
+	<span class="focus-input100-2"></span>
+</div>
+
+<br>
+<p>Telefone*:</p>
+<div class="wrap-input100 validate-input" data-validate = "Valid phone is required">
+	<input class="input100" type="text" name="inputPhone" placeholder="Telefone" value="" required>
+	<span class="focus-input100-1"></span>
+	<span class="focus-input100-2"></span>
+</div>
+
+<br>
+<p>CEP:</p>
+<div class="wrap-input100">
+<input name="cep" type="text" id="cep" value="" class="input100" size="10" maxlength="9"
+		 onblur="pesquisacep(this.value);" placeholder="00000-000"/></label>
+	<span class="focus-input100-1"></span>
+	<span class="focus-input100-2"></span>
+</div>
+<br>
+<p>Cidade*:</p>
+<div class="wrap-input100 validate-input">
+	<input class="input100" name="cidade" type="text" id="cidade" size="40" required placeholder="Cidade">
+	<span class="focus-input100-1"></span>
+	<span class="focus-input100-2"></span>
+</div>
+
+<br>
+<p>Serviço Futuro*:</p>
+<div class="w-col w-col-6">
+	<table>
+		<tr>
+			<label class="w-checkbox">
+				<input type="checkbox" name="checkbox" class="w-checkbox-input" value = "1">
+				<span  class="w-form-label">Cabelereiro</span>
+			</label>
+		</tr>
+		<br>
+		<tr>
+			<label class="w-checkbox">
+				<input type="checkbox" id="checkbox-2" name="checkbox" data-name="Checkbox 2" class="w-checkbox-input" value = "2">
+				<span id="Role" class="w-form-label">Manicure e Pedicure</span>
+			</label>
+		</tr>
+		<br>
+		<tr>
+			<label class="w-checkbox">
+				<input type="checkbox" id="checkbox-4" name="checkbox" data-name="Checkbox 4" class="w-checkbox-input" value = "3">
+				<span class="w-form-label">Procedimentos Estéticos</span>
+			</label>
+		</tr>
+		<br>
+		<tr>
+			<label class="w-checkbox">
+				<input type="checkbox" id="checkbox-5" name="checkbox" data-name="Checkbox 5" class="w-checkbox-input" value = "4">
+				<span class="w-form-label">Diarista</span>
+			</label>
+		</tr>
+		<br>
+		<tr>
+			<label class="w-checkbox">
+				<input type="checkbox" id="checkbox-3" name="checkbox" data-name="Checkbox 3" class="w-checkbox-input" value = "5">
+				<span class="w-form-label">Dentista</span>
+			</label>
+		</tr>
+		<br>
+		<tr>
+			<label class="w-checkbox">
+				<input type="checkbox" id="checkbox-6" name="checkbox" data-name="Checkbox 6" class="w-checkbox-input" value = "6">
+				<span class="w-form-label">Doações</span>
+			</label>
+		</tr>
+		<br>
+		<tr>
+			<label class="w-checkbox">
+				<input type="checkbox" id="checkbox-6" name="checkbox" data-name="Checkbox 6" class="w-checkbox-input" value = "7">
+				<span class="w-form-label">Outros Servicos</span>
+			</label>
+		</tr>
+	</table>
+</div>
+<br>
+<p>Comentários:</p>
+<div class="wrap-input100">
+	<input class="input100" type="text" name="inputComments" placeholder="" value="">
+	<span class="focus-input100-1"></span>
+	<span class="focus-input100-2"></span>
+</div>
+
+
+
+
+
+<div class="container-login100-form-btn m-t-20">
+	<button class="login100-form-btn">
+		Quero ajudar!
+	</button type="submit" value="Submit">
+</div>
+
+<div class="text-center p-t-45 p-b-4">
+	<span class="txt1">
+		Criado por:
+	</span>
+
+	<a href="https://www.linkedin.com/in/andr%C3%A9-cordeiro-3296b372/" class="txt2 hov1">
+		André C.
+	</a>
+	<br>
+	<br>
+	<font size = "2px"><em>Alguma Dúvida? Fale comigo, clique no link acima</em></font>
+</div>
+</form>
+-->
