@@ -28,8 +28,9 @@ def form_redirect1():
 def form_redirect2():
         return render_template('server.html')
 
-@app.route('/thankyou/<voluntary_id>')
-def form_thankyou(voluntary_id):
+@app.route('/thankyou')
+def form_thankyou():
+        voluntary_id = manager_id = session.get("voluntary_id",None)
         #Pegando as informacoes
 
         conn = mysql.connect()
@@ -86,7 +87,7 @@ def form_thankyou(voluntary_id):
         else:
             same_city = 0
         #print("Match Perfeito")
-        print(match_list)
+        #print(match_list)
 
         #print("Na sua Cidade")
         #print(same_city_and_service_list)
@@ -109,9 +110,9 @@ def form_submit():
         _estado = request.form['estado']
         _services = str(request.form.getlist('checkbox'))
         _comments = request.form['inputComments']
-        flash('Obrigado! Em breve entraremos em contato com voce!')
-        print("Olha leeee3")
-        print(_services)
+        #flash('Obrigado! Em breve entraremos em contato com voce!')
+        #print("Olha leeee3")
+        #print(_services)
         lead_id = str(uuid.uuid1())
 
         #escrevendo no banco
@@ -131,7 +132,7 @@ def form_submit():
         if (len(row2) > 0):
             message = Mail(
             from_email='ajudelocal@gmail.com',
-            to_emails='andrecordeiroacs@gmail.com'
+            to_emails=_email
             )
 
             message.template_id = 'd-641a0020a8174bb5ad817e67dc7b9dac'
@@ -148,7 +149,7 @@ def form_submit():
         else:
             message = Mail(
             from_email='ajudelocal@gmail.com',
-            to_emails='andrecordeiroacs@gmail.com'
+            to_emails=_email
             )
 
             message.template_id = 'd-9b18a6dffbc948e3bd83622a7f2eb5f1'
@@ -161,7 +162,8 @@ def form_submit():
             except Exception as e:
                 print(e)
                 print("Deu Ruim sem custom")
-        return redirect('/')
+        session['voluntary_id'] = lead_id
+        return redirect('/thankyou')
 
 @app.route('/submit_server', methods=['POST'])
 def form_submit_server():
@@ -192,7 +194,7 @@ def form_submit_server():
 
         message = Mail(
               from_email='ajudelocal@gmail.com',
-              to_emails='andrecordeiroacs@gmail.com'
+              to_emails=_email
               )
 
         message.template_id = 'd-b97119cd37ea4490b5b2a7870cbb81f3'
