@@ -12,6 +12,8 @@ sendgrid = "*"
 Flask = "*"
 PyMySQL = "*"
 Flask-MySQL = "*"
+flask-sqlalchemy = "*"
+pylint-flask-sqlalchemy = "*"
 
 [requires]
 python_version = "3.6"

@@ -1,3 +1,6 @@
 {
-    "python.pythonPath": "C:\\Users\\mdels\\.virtualenvs\\ajudelocal-XcgWyH-A\\Scripts\\python.exe"
+    "python.pythonPath": "C:\\Users\\mdels\\.virtualenvs\\ajudelocal-XcgWyH-A\\Scripts\\python.exe",
+    "python.linting.pylintEnabled": true,
+    "python.linting.pylintArgs": ["--load-plugins", "pylint-flask"],
+    "python.linting.enabled": true
 }

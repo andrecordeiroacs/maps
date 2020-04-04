@@ -2,24 +2,27 @@ import io
 from flask import Flask, render_template, redirect, url_for, make_response
 from flask import jsonify
 from flask import request
-import pymysql
-from db_config import mysql
+from db_config import *
 from flask import flash, session, render_template, request, redirect
 import uuid
-import datetime
+from datetime import datetime
 from sendgrid import SendGridAPIClient
 from sendgrid.helpers.mail import Mail
 import os
 import ast
+from models.match_users import *
+from models.services import Services
+from models.voluntary import Voluntary
+from models.server import Server
 
 # cache = Cache(config={'CACHE_TYPE': 'simple'})
-app = Flask(__name__)
+#app = Flask(__name__)
 # cache.init_app(app)u
-app.secret_key = "secret key"
+#app.secret_key = "secret key"
 
 @app.route('/')
-def form_open():
-	return render_template('index.html')
+def form_open():        
+    return render_template('index.html')
 
 @app.route('/redirect1')
 def form_redirect1():
@@ -31,32 +34,14 @@ def form_redirect2():
 
 @app.route('/thankyou')
 def form_thankyou():
-        voluntary_id = manager_id = session.get("voluntary_id",None)
-        #Pegando as informacoes
-        print ("teste")
-        conn = mysql.connect()
-        cursor = conn.cursor()
-        user_sql = "SELECT `city`, `services`, `bairro` FROM `ajudelocal_voluntary` WHERE `id` = %s"
-        cursor.execute(user_sql, voluntary_id)
-        voluntary = cursor.fetchall()
-        conn.commit()
+        voluntary_id = session.get("voluntary_id",None)        
+        
+        voluntary = Voluntary.query.filter_by(id_user=voluntary_id).first()
+        server = Server.query.filter_by(city=voluntary.city).all()
+        serviceVoluntary = Services.query.with_entities(Services.servicename).filter_by(id_user = voluntary_id).all()        
 
-        user_sql2 = "SELECT * FROM `ajudelocal_server` WHERE `city` = %s ORDER BY `created_at` DESC"
-        cursor.execute(user_sql2, voluntary[0][0])
-        server = cursor.fetchall()
-        conn.commit()       
+        #list_servicesVoluntary = value for value in serviceVoluntary
         
-        #print(voluntary)
-        #print(server)
-
-        user_services_sql = "SELECT servicename FROM `ajudelocal_services` WHERE `id_user` = %s"
-        cursor.execute(user_services_sql, voluntary_id)
-        serviceVoluntary = [item[0] for item in cursor.fetchall()]
-        conn.commit()
-        
-        
-        
-        rowsServer = len(server)
         #match perfeito
         i=0
         match = 0
@@ -68,45 +53,40 @@ def form_thankyou():
         same_city_and_service_list = []
         same_city_other_service_list = []
         same_city = 0
+        
+        same_city = 0
+        for i in server:
+            #atribui servico
+            serviceServer = Services.query.with_entities(Services.servicename).filter_by(id_user=i.id_user).all()
+            
+            if (len(serviceServer) == 0):
+                continue
 
-        if(len(server)>0):
-            same_city = 1
-            for i in server:
-                #atribui servico
-                server_services_sql = "SELECT servicename FROM `ajudelocal_services` WHERE `id_user` = %s"
-                cursor.execute(server_services_sql, i[0])
-                serviceServer = [item[0] for item in cursor.fetchall()]
+            user_obj = Match_Users(i.name, serviceServer, i.phone, i.email)           
 
-                user_obj = Match_Users(i[2], serviceServer, i[4], i[3])
-
-                #checa mesmo bairro
-                bairroServer = i[9]
-                bairroVoluntary = voluntary[0][2]
-                if(bairroServer == bairroVoluntary):
-                    #checa mesmo bairro e  servico
-                    if(any(check in serviceServer for check in serviceVoluntary)):
-                        match_list.append(user_obj)
-                        match += 1
-                    #mesmo bairro, prem outro servico
-                    else:
-                        other_service_same_neighbor_list.append(user_obj)
-                        other_service_same_neighbor += 1
+            #checa mesmo bairro
+            bairroServer = i.bairro
+            bairroVoluntary = voluntary.bairro
+            if(bairroServer == bairroVoluntary):
+                #checa mesmo bairro e  servico
+                if(any(check in serviceServer for check in serviceVoluntary)):
+                    match_list.append(user_obj)
+                    match += 1
+                #mesmo bairro, prem outro servico
                 else:
-                    #checa mesma cidade e mesmo servico                    
-                    if(any(check in serviceServer for check in serviceVoluntary)):
-                        same_city_and_service_list.append(user_obj)
-                        same_city_and_service += 1
-                    #mesma cidade e outro servico
-                    else:
-                        same_city_other_service_list.append(user_obj)
-                        same_city_other_service += 1
-        else:
-            same_city = 0
-        print("Match Perfeito")
-        print(match_list)
-
-        cursor.close()
-        conn.close()     
+                    other_service_same_neighbor_list.append(user_obj)
+                    other_service_same_neighbor += 1
+            else:
+                #checa mesma cidade e mesmo servico                    
+                if(any(check in serviceServer for check in serviceVoluntary)):
+                    same_city_and_service_list.append(user_obj)
+                    same_city_and_service += 1
+                #mesma cidade e outro servico
+                else:
+                    same_city_other_service_list.append(user_obj)
+                    same_city_other_service += 1   
+            same_city = 1
+           
         #print("Na sua Cidade")
         #print(same_city_and_service_list)
 
@@ -127,38 +107,27 @@ def form_submit():
         _bairro = request.form['bairro']
         _estado = request.form['estado']
         _services = str(request.form.getlist('checkbox'))
-        _listServices = ast.literal_eval(_services)
-       
-        _comments = request.form['inputComments']
-        #flash('Obrigado! Em breve entraremos em contato com voce!')
-        #print("Olha leeee3")
-        #print(_services)
+        _listServices = ast.literal_eval(_services)       
+        _comments = request.form['inputComments']        
         lead_id = str(uuid.uuid1())
-
-        #escrevendo no banco
-        conn = mysql.connect()
-        cursor = conn.cursor()
-        user_sql = "INSERT INTO `ajudelocal_voluntary`(`id`, `name`, `email`, `phone`, `city`, `services`, `comments`, `cep`, `bairro`, `estado`) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"
-        sql_where = (lead_id, _name, _email, _phone, _city, _services, _comments, _cep, _bairro, _estado)
-        cursor.execute(user_sql, sql_where)
-        row = cursor.fetchall()
-        conn.commit()
-        post_services(_listServices, lead_id)
-
-        user_sql2 = "SELECT * FROM `ajudelocal_server` WHERE `city` = %s ORDER BY `created_at` DESC LIMIT 1"
-        cursor.execute(user_sql2, _city)
-        row2 = cursor.fetchall()
-        conn.commit()
-        cursor.close()
-        conn.close()
-        if (len(row2) > 0):
+        voluntary = Voluntary(lead_id, datetime.now(), _name, _email, _phone, _city, _services, _comments, _cep, _bairro, _estado)
+        db.session.add(voluntary)
+        
+        for i in _listServices:                                    
+            service = Services(lead_id, i)
+            db.session.add(service)                
+        db.session.commit()  
+        server_services = Server.query.filter_by(city=_city).first()
+        
+        if (server_services.name != ""):
             message = Mail(
             from_email='ajudelocal@gmail.com',
             to_emails=_email
             )
 
             message.template_id = 'd-641a0020a8174bb5ad817e67dc7b9dac'
-            message.dynamic_template_data = {'Sender_Name': row2[0][2], 'Sender_City': row2[0][5], 'Sender_Email': row2[0][3] , 'Sender_Zip': row2[0][4] }
+            message.dynamic_template_data = {'Sender_Name': server_services.name, 'Sender_City': server_services.city,
+            'Sender_Email': server_services.email , 'Sender_Zip': server_services.cep }
             try:
                 sg = SendGridAPIClient("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")
                 response = sg.send(message)
@@ -177,10 +146,7 @@ def form_submit():
             message.template_id = 'd-9b18a6dffbc948e3bd83622a7f2eb5f1'
             try:
                 sg = SendGridAPIClient("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")
-                response = sg.send(message)
-                print(response.status_code)
-                print(response.body)
-                print(response.headers)
+                response = sg.send(message)                
             except Exception as e:
                 print(e)
                 print("Deu Ruim sem custom")
@@ -199,23 +165,17 @@ def form_submit_server():
         _services = str(request.form.getlist('checkbox'))        
         _listServices = ast.literal_eval(_services)
         _comments = request.form['inputComments']
+        lead_id = str(uuid.uuid1())      
+        server = Server(lead_id, datetime.now(), _name, _email, _phone, _city, _services, _comments, _cep, _bairro, _estado)
+        db.session.add(server)
+        
+        for i in _listServices:                                    
+            service = Services(lead_id, i)
+            db.session.add(service)                
+        db.session.commit()  
+        
+        
         flash('Obrigado! Em breve entraremos em contato com voce!')
-        print("Olha leeee2")
-        print(_services)
-        lead_id = str(uuid.uuid1())
-
-        #escrevendo no banco
-        conn = mysql.connect()
-        cursor = conn.cursor()
-        user_sql = "INSERT INTO `ajudelocal_server`(`id`, `name`, `email`, `phone`, `city`, `services`, `comments`, `cep`, `bairro`, `estado`) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"
-        sql_where = (lead_id, _name, _email, _phone, _city, _services, _comments, _cep, _bairro, _estado)
-        cursor.execute(user_sql, sql_where)
-        row = cursor.fetchall()
-        conn.commit()
-        post_services(_listServices, lead_id)
-        cursor.close()
-        conn.close()
-
         message = Mail(
               from_email='ajudelocal@gmail.com',
               to_emails=_email
@@ -233,39 +193,6 @@ def form_submit_server():
               print("Deu Ruim")
         return redirect('/')
 
-
-
-###### GRAVA SERVICES NO BANCO #####
-def post_services(service, id):
-    conn = mysql.connect()
-    cursor = conn.cursor()
-    services_sql = "INSERT INTO `ajudelocal_services`(`id_user`, `servicename`) VALUES (%s,%s)"
-    for i in service:                                     
-        service_name = get_service(i)              
-        sql_services = (id, service_name)
-        cursor.execute(services_sql, sql_services)
-        conn.commit()
-    conn.close()
-###### ENUM DOS SERVIÇOS #####
-
-def get_service(i):
-    switcher={                
-                '1':'Cabelereiro',
-                '2':'Manicure e Pedicure',
-                '3':'Procedimentos Estéticos',
-                '4':'Diarista',
-                '5':'Dentista',
-                '6':'Doações',
-                '7': 'Outros Servicos'
-             }
-    return switcher.get(i,"Outros Servicos")            
-
-class Match_Users:
-    def __init__(self, nome, ramo, telefone, email):
-        self.nome = nome
-        self.ramo = ramo
-        self.telefone = telefone
-        self.email = email
 
 if __name__ == "__main__":
     app.secret_key = 'secret key'
