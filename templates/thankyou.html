@@ -27,14 +27,15 @@
 <!--===============================================================================================-->
 </head>
 <body>
+	{% include 'menu.html' %}
 
 	<div class="limiter">
 		<div class="container-login100">
 			<div class="wrap-login100 col-md-6 p-l-65 p-r-65 p-t-25 p-b-50">
 					<span class="login100-form-title p-b-33">
 					</span>
-					<h2><center>Comércios da sua região</center></h2>
-					<br>
+					<h2>Comércios da sua região:</h2>
+					<hr>
 					<p>
 
 						{% with messages = get_flashed_messages() %}
@@ -57,40 +58,40 @@
 					{%else%}
 						{%if match > 0%}
 						<!-- Match Perfeito -->
-						<div class="card bg-light mb-3">
-							<div class="card-header">
-								<h3>No seu bairro</h3>
-								<small>Mesma bairro e serviço que procura</small>
-							</div>								
-							<div class="card-body">
-								<ul class="list-group">
+							<div class="card bg-success mb-3">
+								<div class="card-header text-white">
+									<h3>No seu bairro</h3>
+									<small>Mesmo bairro e serviço que procura</small>
+								</div>
+								<ul class="list-group list-group-flush">
 									{%for i in match_list%}
-									<li class="list-group-item list-group-item-success">
-										<h5 class="card-title">Nome: {{i.nome}}</h5> 										
+									<li class="list-group-item">
+										<h5 class="card-title">{{i.nome}}</h5> 										
 										<p class="">Ramo: {{i.ramo}}</p>
 										<p class="card-text">Telefone: {{i.telefone}}</p>
 										<p class="card-text">E-mail: {{i.email}}</p>
 									</li>
 									{%endfor%}	
-								</ul>					
-							</div>								
-						</div>							
+								</ul>								
+							</div>							
 						{%endif%}
 						{%if same_city_and_service > 0%}
 							<!-- Mesma cidade e serviço -->
-							<div class="card text-white bg-light mb-3">
+							<div class="card bg-light mb-3">
 								<div class="card-header">
 									<h3>Na sua cidade</h3>
 									<small>Mesma cidade e serviço que procura</small>
-								</div>								
-								{%for i in same_city_and_service_list%}
-									<div class="card-body">
-										<h5 class="card-title">Nome: {{i.nome}}</h5> 										
+								</div>	
+								<ul class="list-group list-group-flush">
+									{%for i in same_city_and_service_list%}
+									<li class="list-group-item">
+										<h5 class="card-title">{{i.nome}}</h5> 										
 										<p class="">Ramo: {{i.ramo}}</p>
 										<p class="card-text">Telefone: {{i.telefone}}</p>
 										<p class="card-text">E-mail: {{i.email}}</p>
-									</div>
-								{%endfor%}								
+									</li>
+									{%endfor%}	
+								</ul>								
 							</div>	
 						{%endif%}
 						{%if other_service_same_neighbor > 0%}
@@ -100,18 +101,16 @@
 									<h3>No seu bairro</h3>
 									<small>Mesmo bairro e outros serviços</small>
 								</div>		
-								<div class="card-body">
-									<ul class="list-group">
-										{%for i in other_service_same_neighbor_list%}
-										<li class="list-group-item list-group-item-light">
-											<h5 class="card-title">Nome: {{i.nome}}</h5> 										
-											<p class="">Ramo: {{i.ramo}}</p>
-											<p class="card-text">Telefone: {{i.telefone}}</p>
-											<p class="card-text">E-mail: {{i.email}}</p>
-										</li>
-										{%endfor%}	
-									</ul>					
-								</div>							
+								<ul class="list-group list-group-flush">
+									{%for i in other_service_same_neighbor_list%}
+									<li class="list-group-item">
+										<h5 class="card-title">{{i.nome}}</h5> 										
+										<p class="">Ramo: {{i.ramo}}</p>
+										<p class="card-text">Telefone: {{i.telefone}}</p>
+										<p class="card-text">E-mail: {{i.email}}</p>
+									</li>
+									{%endfor%}	
+								</ul>							
 							</div>	
 						{%endif%}
 						{%if same_city_other_service > 0%}
@@ -121,14 +120,16 @@
 									<h3>Na sua cidade</h3>
 									<small>Mesma cidade e outros serviços</small>
 								</div>								
-								{%for i in same_city_other_service_list%}
-									<div class="card-body">
-										<h5 class="card-title">Nome: {{i.nome}}</h5> 										
+								<ul class="list-group list-group-flush">
+									{%for i in same_city_other_service_list%}
+									<li class="list-group-item">
+										<h5 class="card-title">{{i.nome}}</h5> 										
 										<p class="">Ramo: {{i.ramo}}</p>
 										<p class="card-text">Telefone: {{i.telefone}}</p>
 										<p class="card-text">E-mail: {{i.email}}</p>
-									</div>
-								{%endfor%}								
+									</li>
+									{%endfor%}	
+								</ul>									
 							</div>	
 						{%endif%}						
 					{%endif%}
