@@ -1,0 +1,232 @@
+<html lang="en">
+<head>
+	<title>Ajude o Comércio Local</title>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+<!--===============================================================================================-->
+	<link rel="icon" type="image/png" href="{{ url_for('static', filename='images/icons/favicon.ico')}}"/>
+<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='vendor/bootstrap/css/bootstrap.min.css') }}">
+<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='fonts/font-awesome-4.7.0/css/font-awesome.min.css') }}">
+<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='fonts/Linearicons-Free-v1.0.0/icon-font.min.css')}}">
+<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='vendor/animate/animate.css')}}">
+<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='vendor/css-hamburgers/hamburgers.min.css')}}">
+<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='vendor/animsition/css/animsition.min.css')}}">
+<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='vendor/select2/select2.min.css')}}">
+<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='vendor/daterangepicker/daterangepicker.css')}}">
+<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='styles/css/util.css')}}">
+	<link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='styles/css/main.css')}}">
+<!--===============================================================================================-->
+
+<script type="text/javascript" >
+
+function limpa_formulário_cep() {
+				//Limpa valores do formulário de cep.
+				//document.getElementById('rua').value=("");
+				document.getElementById('bairro').value=("");
+				document.getElementById('cidade').value=("");
+				document.getElementById('uf').value=("");
+				//document.getElementById('ibge').value=("");
+}
+
+function meu_callback(conteudo) {
+		if (!("erro" in conteudo)) {
+				//Atualiza os campos com os valores.
+				//document.getElementById('rua').value=(conteudo.logradouro);
+				document.getElementById('bairro').value=(conteudo.bairro);
+				document.getElementById('cidade').value=(conteudo.localidade);
+				document.getElementById('uf').value=(conteudo.uf);
+				//document.getElementById('ibge').value=(conteudo.ibge);
+		} //end if.
+		else {
+				//CEP não Encontrado.
+				limpa_formulário_cep();
+				alert("CEP não encontrado.");
+		}
+}
+
+function pesquisacep(valor) {
+
+		//Nova variável "cep" somente com dígitos.
+		var cep = valor.replace(/\D/g, '');
+
+		//Verifica se campo cep possui valor informado.
+		if (cep != "") {
+
+				//Expressão regular para validar o CEP.
+				var validacep = /^[0-9]{8}$/;
+
+				//Valida o formato do CEP.
+				if(validacep.test(cep)) {
+
+						//Preenche os campos com "..." enquanto consulta webservice.
+						//document.getElementById('rua').value="...";
+						document.getElementById('bairro').value="...";
+						document.getElementById('cidade').value="...";
+						document.getElementById('uf').value="...";
+						//document.getElementById('ibge').value="...";
+
+						//Cria um elemento javascript.
+						var script = document.createElement('script');
+
+						//Sincroniza com o callback.
+						script.src = 'https://viacep.com.br/ws/'+ cep + '/json/?callback=meu_callback';
+
+						//Insere script no documento e carrega o conteúdo.
+						document.body.appendChild(script);
+
+				} //end if.
+				else {
+						//cep é inválido.
+						limpa_formulário_cep();
+						alert("Formato de CEP inválido.");
+				}
+		} //end if.
+		else {
+				//cep sem valor, limpa formulário.
+				limpa_formulário_cep();
+		}
+};
+
+</script>
+
+
+
+
+</head>
+<body>
+	{% include 'menu.html' %}
+
+	<div class="limiter">
+		<div class="container-login100">
+			<div class="wrap-login100 col-md-6 p-l-65 p-r-65 p-t-25 p-b-50">
+				<form class="login100-form validate-form" method = "post" action="/search_locals">
+					<span class="login100-form-title p-b-33">
+					</span>
+					<p>
+
+						{% with messages = get_flashed_messages() %}
+  						{% if messages %}
+    						<script>
+      							var messages = {{ messages | safe }};
+      							for (var i=0; i<messages.length; i++) {
+        						alert(messages[i]);
+      							}
+    						</script>
+  						{% endif %}
+						{% endwith %}
+					</p>
+					<h2>Busque na sua região:</h2>
+					<hr>
+
+
+					<p>CEP*:</p>
+					<div class="wrap-input100">
+					<input name="cep" type="text" id="cep" required value="" class="input100" size="10" maxlength="9"
+               onblur="pesquisacep(this.value);" placeholder="00000-000"/></label>
+        		<span class="focus-input100-1"></span>
+						<span class="focus-input100-2"></span>
+					</div>
+					<br>
+					<p>Cidade*:</p>
+					<div class="wrap-input100 validate-input">
+						<input class="input100" name="cidade" type="text" id="cidade" size="40" required placeholder="Cidade">
+						<span class="focus-input100-1"></span>
+						<span class="focus-input100-2"></span>
+						<input name = "bairro" id="bairro" type="hidden">
+						<input name="estado" id="uf" type="hidden">
+					</div>
+					<br>
+
+					<p>Serviço que você presta*:</p>
+					<div class="w-col w-col-6">
+						<table>
+							<tr>
+								<label class="w-checkbox">
+									<input type="checkbox" name="checkbox" class="w-checkbox-input" value = "1">
+									<span  class="w-form-label">Cabelereiro</span>
+								</label>
+							</tr>
+							<br>
+							<tr>
+								<label class="w-checkbox">
+									<input type="checkbox" id="checkbox-2" name="checkbox" data-name="Checkbox 2" class="w-checkbox-input" value = "2">
+									<span id="Role" class="w-form-label">Manicure e Pedicure</span>
+								</label>
+							</tr>
+							<br>
+							<tr>
+								<label class="w-checkbox">
+									<input type="checkbox" id="checkbox-4" name="checkbox" data-name="Checkbox 4" class="w-checkbox-input" value = "3">
+									<span class="w-form-label">Procedimentos Estéticos</span>
+								</label>
+							</tr>
+							<br>
+							<tr>
+								<label class="w-checkbox">
+									<input type="checkbox" id="checkbox-5" name="checkbox" data-name="Checkbox 5" class="w-checkbox-input" value = "4">
+									<span class="w-form-label">Diarista</span>
+								</label>
+							</tr>
+							<br>
+							<tr>
+								<label class="w-checkbox">
+									<input type="checkbox" id="checkbox-3" name="checkbox" data-name="Checkbox 3" class="w-checkbox-input" value = "5">
+									<span class="w-form-label">Dentista</span>
+								</label>
+							</tr>
+							<br>
+							<tr>
+								<label class="w-checkbox">
+									<input type="checkbox" id="checkbox-6" name="checkbox" data-name="Checkbox 6" class="w-checkbox-input" value = "6">
+									<span class="w-form-label">Doações</span>
+								</label>
+							</tr>
+							<br>
+							<tr>
+								<label class="w-checkbox">
+									<input type="checkbox" id="checkbox-6" name="checkbox" data-name="Checkbox 6" class="w-checkbox-input" value = "7">
+									<span class="w-form-label">Outros Servicos</span>
+								</label>
+							</tr>
+						</table>
+					</div>
+
+					<div class="container-login100-form-btn m-t-20">
+						<button class="login100-form-btn">
+							Buscar
+						</button type="submit" value="Submit">
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+
+
+
+<!--===============================================================================================-->
+	<script src="{{ url_for('static',filename='vendor/jquery/jquery-3.2.1.min.js')}}"></script>
+<!--===============================================================================================-->
+	<script src="{{ url_for('static',filename='vendor/animsition/js/animsition.min.js')}}"></script>
+<!--===============================================================================================-->
+	<script src="{{ url_for('static',filename='vendor/bootstrap/js/popper.js')}}"></script>
+	<script src="{{ url_for('static',filename='vendor/bootstrap/js/bootstrap.min.js')}}"></script>
+<!--===============================================================================================-->
+	<script src="{{ url_for('static',filename='vendor/select2/select2.min.js')}}"></script>
+	<script src="{{ url_for('static',filename='vendor/daterangepicker/moment.min.js')}}"></script>
+	<script src="{{ url_for('static',filename='vendor/daterangepicker/daterangepicker.js')}}"></script>
+<!--===============================================================================================-->
+	<script src="{{ url_for('static',filename='vendor/countrowntime/countrowntime.js')}}"></script>
+<!--===============================================================================================-->
+	<script src="{{ url_for('static',filename='js/main.js')}}"></script>
+
+</body>
+</html>

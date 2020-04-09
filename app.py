@@ -11,7 +11,7 @@ from sendgrid.helpers.mail import Mail
 import os
 import ast
 from models.match_users import *
-from models.services import Services
+from models.services import Services, get_service
 from models.voluntary import Voluntary
 from models.server import Server
 
@@ -21,7 +21,7 @@ from models.server import Server
 #app.secret_key = "secret key"
 
 @app.route('/')
-def form_open():        
+def form_open():
     return render_template('index.html')
 
 @app.route('/redirect1')
@@ -32,16 +32,49 @@ def form_redirect1():
 def form_redirect2():
         return render_template('server.html')
 
+@app.route('/search')
+def search():
+        return render_template('searchlocals.html')
+
+@app.route('/search_locals', methods=['POST'])
+def search_locals():
+        #get form values
+        _city = request.form['cidade']
+        _cep = request.form['cep']
+        _bairro = request.form['bairro']
+        _estado = request.form['estado']
+        _services = str(request.form.getlist('checkbox'))
+        _listServices = ast.literal_eval(_services)
+
+        i=0
+        _nameServices = []
+        for i in _listServices:
+            _nameServices.append(get_service(i))
+
+        #save into session
+        session['city'] = _city
+        session['cep'] = _cep
+        session['bairro'] = _bairro
+        session['estado'] = _estado
+        session['services'] = _services
+        session['listServices'] = _listServices
+        session['nameServices'] = _nameServices
+
+        return redirect('/thankyou')
+
 @app.route('/thankyou')
 def form_thankyou():
-        voluntary_id = session.get("voluntary_id",None)        
-        
-        voluntary = Voluntary.query.filter_by(id_user=voluntary_id).first()
-        server = Server.query.filter_by(city=voluntary.city).all()
-        serviceVoluntary = Services.query.with_entities(Services.servicename).filter_by(id_user = voluntary_id).all()        
+        #voluntary_id = session.get("voluntary_id",None)
 
+        #voluntary = Voluntary.query.filter_by(id_user=voluntary_id).first()
+
+        _city = session.get("city",None)
+
+        server = Server.query.filter_by(city=_city).all()
+        #serviceVoluntary = Services.query.with_entities(Services.servicename).filter_by(id_user = voluntary_id).all()
+        serviceVoluntary = session.get("nameServices",None)
         #list_servicesVoluntary = value for value in serviceVoluntary
-        
+
         #match perfeito
         i=0
         match = 0
@@ -53,23 +86,24 @@ def form_thankyou():
         same_city_and_service_list = []
         same_city_other_service_list = []
         same_city = 0
-        
-        same_city = 0
         for i in server:
+            newServiceServer = []
             #atribui servico
             serviceServer = Services.query.with_entities(Services.servicename).filter_by(id_user=i.id_user).all()
-            
             if (len(serviceServer) == 0):
                 continue
 
-            user_obj = Match_Users(i.name, serviceServer, i.phone, i.email)           
+            user_obj = Match_Users(i.name, serviceServer, i.phone, i.email, i.id_user)
 
             #checa mesmo bairro
             bairroServer = i.bairro
-            bairroVoluntary = voluntary.bairro
+            bairroVoluntary = session.get("bairro",None)
+            for j in serviceServer:
+                newServiceServer.append(j[0])
+
             if(bairroServer == bairroVoluntary):
                 #checa mesmo bairro e  servico
-                if(any(check in serviceServer for check in serviceVoluntary)):
+                if(any(check in newServiceServer for check in serviceVoluntary)):
                     match_list.append(user_obj)
                     match += 1
                 #mesmo bairro, prem outro servico
@@ -77,16 +111,16 @@ def form_thankyou():
                     other_service_same_neighbor_list.append(user_obj)
                     other_service_same_neighbor += 1
             else:
-                #checa mesma cidade e mesmo servico                    
-                if(any(check in serviceServer for check in serviceVoluntary)):
+                #checa mesma cidade e mesmo servico
+                if(any(check in newServiceServer for check in serviceVoluntary)):
                     same_city_and_service_list.append(user_obj)
                     same_city_and_service += 1
                 #mesma cidade e outro servico
                 else:
                     same_city_other_service_list.append(user_obj)
-                    same_city_other_service += 1   
+                    same_city_other_service += 1
             same_city = 1
-           
+
         #print("Na sua Cidade")
         #print(same_city_and_service_list)
 
@@ -97,6 +131,76 @@ def form_thankyou():
         #print(same_city_other_service_list)
         return render_template('thankyou.html', same_city = same_city, match = match, match_list = match_list, same_city_and_service = same_city_and_service, same_city_and_service_list = same_city_and_service_list, other_service_same_neighbor = other_service_same_neighbor, other_service_same_neighbor_list = other_service_same_neighbor_list, same_city_other_service = same_city_other_service, same_city_other_service_list = same_city_other_service_list)
 
+@app.route('/server_intention', methods=['POST'])
+def form_server_intention():
+        session['_serverId'] = request.form['id_user']
+        session['_serverEmail'] = request.form['id_email']
+        session['_serverName'] = request.form['id_name']
+        session['_serverPhone'] = request.form['id_phone']
+        return render_template('/voluntary_apply.html')
+
+
+#route for server apply
+@app.route('/server_apply', methods=['POST'])
+def form_server_apply():
+        _name = request.form['inputName']
+        _email = request.form['inputEmail']
+        _phone = request.form['inputPhone']
+        _comments = request.form['inputComments']
+
+        _city = session.get("city",None)
+        _cep = session.get("cep",None)
+        _bairro = session.get("bairro",None)
+        _estado = session.get("estado",None)
+        _services = session.get("services",None)
+        _listServices = session.get("listServices",None)
+        _nameServices = session.get("nameServices",None)
+
+        lead_id = str(uuid.uuid1())
+        voluntary = Voluntary(lead_id, datetime.now(), _name, _email, _phone, _city, _services, _comments, _cep, _bairro, _estado)
+        db.session.add(voluntary)
+
+        for i in _listServices:
+            service = Services(lead_id, i)
+            db.session.add(service)
+        db.session.commit()
+        server_services = Server.query.filter_by(city=_city).first()
+
+        message = Mail(
+        from_email='ajudelocal@gmail.com',
+        to_emails=_email
+        )
+
+        message.template_id = 'd-641a0020a8174bb5ad817e67dc7b9dac'
+        try:
+            sg = SendGridAPIClient("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")
+            response = sg.send(message)
+            print(response.status_code)
+            print(response.body)
+            print(response.headers)
+        except Exception as e:
+            print(e)
+
+
+        message2 = Mail(
+        from_email='ajudelocal@gmail.com',
+        to_emails=session.get("_serverEmail",None)
+        )
+
+        message2.template_id = 'd-a58b60e9411a4ec8aa73bef4f2e91eb0'
+        message2.dynamic_template_data = {'Sender_Name': _name, 'Sender_Phone': _phone,
+        'Sender_Email': _email , 'Sender_Comments': _comments }
+        try:
+            sg = SendGridAPIClient("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")
+            response2 = sg.send(message2)
+            print(response2.status_code)
+            print(response2.body)
+            print(response2.headers)
+        except Exception as e:
+            print(e)
+        return redirect('/thankyou')
+
+#route for empty server result
 @app.route('/submit_voluntary', methods=['POST'])
 def form_submit():
         _name = request.form['inputName']
@@ -107,18 +211,33 @@ def form_submit():
         _bairro = request.form['bairro']
         _estado = request.form['estado']
         _services = str(request.form.getlist('checkbox'))
-        _listServices = ast.literal_eval(_services)       
-        _comments = request.form['inputComments']        
+        _listServices = ast.literal_eval(_services)
+
+        _nameServices = []
+        for i in _listServices:
+            _nameServices.append(get_service(i))
+
+        #save into session
+        session['city'] = _city
+        session['cep'] = _cep
+        session['bairro'] = _bairro
+        session['estado'] = _estado
+        session['services'] = _services
+        session['listServices'] = _listServices
+        session['nameServices'] = _nameServices
+
+
+        _comments = request.form['inputComments']
         lead_id = str(uuid.uuid1())
         voluntary = Voluntary(lead_id, datetime.now(), _name, _email, _phone, _city, _services, _comments, _cep, _bairro, _estado)
         db.session.add(voluntary)
-        
-        for i in _listServices:                                    
+
+        for i in _listServices:
             service = Services(lead_id, i)
-            db.session.add(service)                
-        db.session.commit()  
+            db.session.add(service)
+        db.session.commit()
         server_services = Server.query.filter_by(city=_city).first()
-        
+
         if (server_services.name != ""):
             message = Mail(
             from_email='ajudelocal@gmail.com',
@@ -146,11 +265,12 @@ def form_submit():
             message.template_id = 'd-9b18a6dffbc948e3bd83622a7f2eb5f1'
             try:
                 sg = SendGridAPIClient("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")
-                response = sg.send(message)                
+                response = sg.send(message)
             except Exception as e:
                 print(e)
                 print("Deu Ruim sem custom")
         session['voluntary_id'] = lead_id
+        flash('Obrigado! Em breve entraremos em contato com voce!')
         return redirect('/thankyou')
 
 @app.route('/submit_server', methods=['POST'])
@@ -162,19 +282,19 @@ def form_submit_server():
         _cep = request.form['cep']
         _bairro = request.form['bairro']
         _estado = request.form['estado']
-        _services = str(request.form.getlist('checkbox'))        
+        _services = str(request.form.getlist('checkbox'))
         _listServices = ast.literal_eval(_services)
         _comments = request.form['inputComments']
-        lead_id = str(uuid.uuid1())      
+        lead_id = str(uuid.uuid1())
         server = Server(lead_id, datetime.now(), _name, _email, _phone, _city, _services, _comments, _cep, _bairro, _estado)
         db.session.add(server)
-        
-        for i in _listServices:                                    
+
+        for i in _listServices:
             service = Services(lead_id, i)
-            db.session.add(service)                
-        db.session.commit()  
-        
-        
+            db.session.add(service)
+        db.session.commit()
+
+
         flash('Obrigado! Em breve entraremos em contato com voce!')
         message = Mail(
               from_email='ajudelocal@gmail.com',
