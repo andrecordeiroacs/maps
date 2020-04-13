@@ -55,8 +55,7 @@
 						<h3><center>Poxa, não encontramos comércios para você ainda.</center></h3> <br>
 						<p><center>Nossa base ainda não indicou alguém automaticamente. Se increva no botão abaixo e lhe procuraremos em breve!</center></p>
 						<div class="container-login100-form-btn m-t-20 m-b-10">
-							<form method = "post" action="/server_intention">
-								<input name = "id_user" type="hidden" value="{{i.id_user}}">
+							<form action="/redirect1">
 								<button class="login100-form-btn">
 									Me inscrever
 								</button type="submit" value="Submit">
@@ -108,7 +107,7 @@
 										<p class="">Ramo: {{i.ramo}}</p>
 										<p class="card-text">Telefone: {{i.telefone}}</p>
 										<p class="card-text">E-mail: {{i.email}}</p>
-										<div class="container-login100-form-btn m-t-20 m-b-10">
+										<div class="container-login100-form-btn m-t-20">
 											<form method = "post" action="/server_intention">
 												<input name = "id_user" type="hidden" value="{{i.id_user}}">
 												<input name = "id_email" type="hidden" value="{{i.email}}">
